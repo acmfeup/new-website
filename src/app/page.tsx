@@ -1,3 +1,4 @@
+"use client";
 
 import Image from "next/image";
 import DepartmentCard from "@/components/DepartmentCard";
@@ -12,7 +13,6 @@ import {
 	Shield,
 	Wrench,
 } from "lucide-react";
-
 
 interface Department {
 	name: string;
@@ -69,6 +69,8 @@ const departments: Department[] = [
 	},
 ];
 
+const isRecruiting = false;
+
 export default function Home() {
 	return (
 		<div className="min-h-screen bg-background">
@@ -83,7 +85,12 @@ export default function Home() {
 					<div className="max-w-4xl mx-auto space-y-8">
 						{/* Logo */}
 						<div className="w-128 h-64 mx-auto flex items-center justify-center mb-8">
-							<Image src="/acm_white_large_logo.png" alt="ACM Logo" width={400} height={128} />
+							<Image
+								src="/acm_white_large_logo.png"
+								alt="ACM Logo"
+								width={400}
+								height={128}
+							/>
 						</div>
 
 						<h1 className="text-4xl md:text-6xl font-bold text-balance">
@@ -101,9 +108,17 @@ export default function Home() {
 								size={"lg"}
 								className="bg-background hover:bg-secondary/90 text-secondary-foreground text-lg px-8 py-4 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
 								asChild
+								disabled={!isRecruiting}
+								onClick={(e) => {
+									if (!isRecruiting) {
+										e.preventDefault();
+									}
+								}}
 							>
-								<a href="#" target="_blank" rel="noopener noreferrer">
-									Join Us
+								<a href="https://www.instagram.com/acmfeup/" target="_blank" rel="noopener noreferrer">
+									{isRecruiting
+										? "Join Us"
+										: "Recruitment Closed - Stay Tuned!"}
 								</a>
 							</Button>
 						</div>
@@ -147,7 +162,12 @@ export default function Home() {
 				<div className="container mx-auto px-4">
 					<div className="text-center space-y-4">
 						<div className="flex items-center justify-center space-x-2 mb-6">
-							<Image src="/acm_logo.png" alt="ACM Logo" width={32} height={32} />
+							<Image
+								src="/acm_logo.png"
+								alt="ACM Logo"
+								width={32}
+								height={32}
+							/>
 							<span className="text-2xl font-bold">ACM FEUP</span>
 						</div>
 						<p className="text-primary-foreground/80 max-w-md mx-auto">
