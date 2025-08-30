@@ -84,12 +84,20 @@ export default function Home() {
 				<div className="relative container mx-auto px-4 py-24 md:py-32 text-center">
 					<div className="max-w-4xl mx-auto space-y-8">
 						{/* Logo */}
-						<div className="w-128 h-64 mx-auto flex items-center justify-center mb-8">
+						<div className="h-32 sm:h-64 mx-auto flex items-center justify-center mb-8">
 							<Image
 								src="/acm_white_large_logo.png"
 								alt="ACM Logo"
 								width={400}
 								height={128}
+								className="hidden sm:block"
+							/>
+							<Image
+								src="/acm-square-white.png"
+								alt="ACM Logo"
+								width={128}
+								height={128}
+								className="block sm:hidden"
 							/>
 						</div>
 
