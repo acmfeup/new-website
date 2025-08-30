@@ -1,4 +1,5 @@
 
+import Image from "next/image";
 import DepartmentCard from "@/components/DepartmentCard";
 import { Button } from "@/components/ui/button";
 import {
@@ -80,8 +81,9 @@ export default function Home() {
 
 				<div className="relative container mx-auto px-4 py-24 md:py-32 text-center">
 					<div className="max-w-4xl mx-auto space-y-8">
-						<div className="w-24 h-24 mx-auto bg-primary-foreground/20 rounded-full flex items-center justify-center mb-8">
-							<Code className="w-12 h-12 text-primary-foreground" />
+						{/* Logo */}
+						<div className="w-128 h-64 mx-auto flex items-center justify-center mb-8">
+							<Image src="/acm_white_large_logo.png" alt="ACM Logo" width={400} height={128} />
 						</div>
 
 						<h1 className="text-4xl md:text-6xl font-bold text-balance">
@@ -145,7 +147,7 @@ export default function Home() {
 				<div className="container mx-auto px-4">
 					<div className="text-center space-y-4">
 						<div className="flex items-center justify-center space-x-2 mb-6">
-							<Code className="w-8 h-8" />
+							<Image src="/acm_logo.png" alt="ACM Logo" width={32} height={32} />
 							<span className="text-2xl font-bold">ACM FEUP</span>
 						</div>
 						<p className="text-primary-foreground/80 max-w-md mx-auto">
