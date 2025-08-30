@@ -52,7 +52,7 @@ const departments: Department[] = [
 	},
 	{
 		name: "Artificial Intelligence",
-		description: "Dedicaated to AI, machine learning and data-driven projects.",
+		description: "Dedicated to AI, machine learning and data-driven projects.",
 		icon: Brain,
 	},
 	{
