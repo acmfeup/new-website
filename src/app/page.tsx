@@ -1,23 +1,17 @@
+
+import DepartmentCard from "@/components/DepartmentCard";
 import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
 import {
 	Blocks,
 	Bot,
 	Brain,
 	CalendarDays,
 	Code,
-	Megaphone,
 	Palette,
 	Shield,
 	Wrench,
 } from "lucide-react";
-import Image from "next/image";
+
 
 interface Department {
 	name: string;
@@ -115,6 +109,8 @@ export default function Home() {
 				</div>
 			</section>
 
+			{/* Departments Section */}
+
 			<section className="py-20 bg-background">
 				<div className="container mx-auto px-4">
 					<div className="text-center mb-16">
@@ -128,28 +124,15 @@ export default function Home() {
 						</p>
 					</div>
 
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+					<div className="flex flex-wrap justify-center gap-6 max-w-6xl mx-auto">
 						{departments.map((dept, index) => {
-							const IconComponent = dept.icon;
 							return (
-								<Card
+								<div
 									key={index}
-									className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-border hover:border-primary/20"
+									className="w-full md:w-[calc(50%-1.5rem)] lg:w-[calc(33.333%-1.5rem)]"
 								>
-									<CardHeader className="text-center pb-4">
-										<div className="w-16 h-16 mx-auto bg-primary/10  rounded-full flex items-center justify-center mb-4  group-hover:bg-primary/20 transition-colors duration-300">
-											<IconComponent />
-										</div>
-										<CardTitle className="text-xl font-bold text-card-foreground group-hover:text-primary transition-colors duration-300">
-											{dept.name}
-										</CardTitle>
-									</CardHeader>
-									<CardContent>
-										<CardDescription className="text-center text-muted-foreground leading-relaxed">
-											{dept.description}
-										</CardDescription>
-									</CardContent>
-								</Card>
+									<DepartmentCard department={dept} />
+								</div>
 							);
 						})}
 					</div>
