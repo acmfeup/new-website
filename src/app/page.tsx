@@ -116,12 +116,6 @@ export default function Home() {
                 size={"lg"}
                 className="bg-background hover:bg-secondary/90 text-secondary-foreground text-lg px-8 py-4 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                 asChild
-                disabled={!isRecruiting}
-                onClick={(e) => {
-                  if (!isRecruiting) {
-                    e.preventDefault();
-                  }
-                }}
               >
                 <a
                   href="https://www.instagram.com/acmfeup/"
@@ -133,6 +127,19 @@ export default function Home() {
                     : "Recruitment Closed - Stay Tuned!"}
                 </a>
               </Button>
+
+              <p className="text-white/80 text-sm mt-6 max-w-md mx-auto">
+                Follow us on{" "}
+                <a
+                  href="https://www.instagram.com/acmfeup/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:text-white transition-colors"
+                >
+                  Instagram
+                </a>{" "}
+                for recruitment announcements and updates
+              </p>
             </div>
           </div>
         </div>
