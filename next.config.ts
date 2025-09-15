@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/bc",
-        destination: "/",
+        destination: "https://forms.gle/PccJzqxDPzEkwBQb7",
         permanent: true,
       },
     ];
