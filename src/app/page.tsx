@@ -128,7 +128,7 @@ export default function Home() {
                 </a>
               </Button>
 
-              <p className="text-white/80 text-sm mt-6 max-w-md mx-auto">
+              <p className="text-white/80 text-sm mt-4 max-w-md mx-auto">
                 Follow us on{" "}
                 <a
                   href="https://www.instagram.com/acmfeup/"
