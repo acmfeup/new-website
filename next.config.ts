@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         destination: "https://forms.gle/PccJzqxDPzEkwBQb7",
         permanent: true,
       },
+      {
+        source: "/rollup",
+        destination: "https://forms.gle/PccJzqxDPzEkwBQb7",
+        permanent: true,
+      },
     ];
   },
 };
