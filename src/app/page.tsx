@@ -200,7 +200,7 @@ export default function Home() {
               <h3 className="text-lg font-semibold">Get in Touch</h3>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
                 <a
-                  href="mailto:acm@fe.up.pt"
+                  href="mailto:geral@acmfeup.eu"
                   className="flex items-center space-x-2 text-white/80 hover:text-white transition-colors"
                 >
                   <Mail size={20} />
