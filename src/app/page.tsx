@@ -6,6 +6,8 @@ import {
   Brain,
   CalendarDays,
   Code,
+  Instagram,
+  Mail,
   Palette,
   Shield,
   Wrench,
@@ -193,6 +195,30 @@ export default function Home() {
               Association for Computing Machinery at Faculdade de Engenharia da
               Universidade do Porto
             </p>
+
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Get in Touch</h3>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                <a
+                  href="mailto:geral@acmfeup.eu"
+                  className="flex items-center space-x-2 text-white/80 hover:text-white transition-colors"
+                >
+                  <Mail size={20} />
+
+                  <span>geral@acmfeup.eu</span>
+                </a>
+                <a
+                  href="https://www.instagram.com/acmfeup/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center space-x-2 text-white/80 hover:text-white transition-colors"
+                >
+                  <Instagram size={20} />
+                  <span>@acmfeup</span>
+                </a>
+              </div>
+            </div>
+
             <div className="pt-4 border-t border-primary-foreground/20">
               <p className="text-sm text-primary-foreground/60">
                 &copy; {new Date().getFullYear()} ACM FEUP. All rights reserved.
