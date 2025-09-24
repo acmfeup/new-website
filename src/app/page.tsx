@@ -74,6 +74,7 @@ const departments: Department[] = [
 const isRecruiting = false;
 
 export default function Home() {
+
   return (
     <div className="min-h-screen bg-background">
       <section className="relative bg-gradient-to-br from-primary via-primary/90 to-primary/80 text-primary-foreground">
