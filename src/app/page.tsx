@@ -223,6 +223,9 @@ export default function Home() {
               <p className="text-sm text-primary-foreground/60">
                 &copy; {new Date().getFullYear()} ACM FEUP. All rights reserved.
               </p>
+              <a className="text-primary max-w-md mx-auto" href="/meta.jpg">
+                flag
+              </a>
             </div>
           </div>
         </div>
