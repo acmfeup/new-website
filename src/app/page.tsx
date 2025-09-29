@@ -71,7 +71,7 @@ const departments: Department[] = [
   },
 ];
 
-const isRecruiting = false;
+const isRecruiting = true;
 
 export default function Home() {
   return (
@@ -120,7 +120,7 @@ export default function Home() {
                 asChild
               >
                 <a
-                  href="https://www.instagram.com/acmfeup/"
+                  href="https://forms.gle/HfcvYa4sgD8nSWww8"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
