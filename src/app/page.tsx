@@ -66,12 +66,12 @@ const departments: Department[] = [
   {
     name: "Robotics",
     description:
-      "Designs, builds and programs robots for various competitions and projects.",
+      "Designs, builds, and programs robots for various competitions and projects.",
     icon: Bot,
   },
 ];
 
-const isRecruiting = true;
+const isRecruiting = false;
 
 export default function Home() {
   return (
@@ -120,7 +120,7 @@ export default function Home() {
                 asChild
               >
                 <a
-                  href="https://forms.gle/HfcvYa4sgD8nSWww8"
+                  href=""
                   target="_blank"
                   rel="noopener noreferrer"
                 >
