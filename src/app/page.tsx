@@ -66,12 +66,12 @@ const departments: Department[] = [
   {
     name: "Robotics",
     description:
-      "Designs, builds and programs robots for various competitions and projects.",
+      "Designs, builds, and programs robots for various competitions and projects.",
     icon: Bot,
   },
 ];
 
-const isRecruiting = true;
+const isRecruiting = false;
 
 export default function Home() {
   return (
@@ -119,15 +119,17 @@ export default function Home() {
                 className="bg-background hover:bg-secondary/90 text-secondary-foreground text-lg px-8 py-4 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                 asChild
               >
-                <a
-                  href="https://forms.gle/HfcvYa4sgD8nSWww8"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {isRecruiting
-                    ? "Join Us"
-                    : "Recruitment Closed - Stay Tuned!"}
-                </a>
+                {isRecruiting ? (
+                  <a
+                    href="https://google.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Join Us
+                  </a>
+                ) : (
+                  <p>Recruitment Closed - Stay Tuned!</p>
+                )}
               </Button>
 
               <p className="text-white/80 text-sm mt-4 max-w-md mx-auto">
