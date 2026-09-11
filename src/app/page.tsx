@@ -71,7 +71,8 @@ const departments: Department[] = [
   },
 ];
 
-const isRecruiting = false;
+//Doesn't really make sense to have this here, but we keep the logic for when we have a db
+const isRecruiting = true;
 
 export default function Home() {
   return (
@@ -121,7 +122,7 @@ export default function Home() {
               >
                 {isRecruiting ? (
                   <a
-                    href="https://google.com"
+                    href="https://forms.gle/FXjf82jfQjgCom789"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
