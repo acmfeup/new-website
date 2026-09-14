@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/rollup",
-        destination: "https://forms.gle/PccJzqxDPzEkwBQb7",
+        destination: "https://acmfeup.eu",
         permanent: true,
       },
     ];
