@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/bc",
-        destination: "https://forms.gle/PccJzqxDPzEkwBQb7",
+        destination: "https://acmfeup.eu",
         permanent: true,
       },
       {
