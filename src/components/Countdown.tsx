@@ -84,17 +84,35 @@ function splitTime(ms: number) {
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
-export default function Countdown({ target }: { target: Date }) {
+export default function Countdown({
+  target,
+  onEnd,
+}: {
+  target: Date;
+  onEnd?: () => void;
+}) {
   // null until mounted so server and client render the same blank matrix
   const [now, setNow] = useState<number | null>(null);
 
   useEffect(() => {
-    setNow(Date.now());
-    const id = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(id);
-  }, []);
+    let id: ReturnType<typeof setTimeout>;
+    const tick = () => {
+      const current = Date.now();
+      setNow(current);
+      // Wake exactly when the next second rolls over, a plain 1s interval jitters and skips digits
+      const untilNextSecond = (target.getTime() - current) % 1000;
+      id = setTimeout(tick, untilNextSecond > 0 ? untilNextSecond : 1000);
+    };
+    tick();
+    return () => clearTimeout(id);
+  }, [target]);
 
   const remaining = now === null ? null : Math.max(0, target.getTime() - now);
+
+  useEffect(() => {
+    if (remaining === 0) onEnd?.();
+  }, [remaining, onEnd]);
+
   if (remaining === 0) return null;
 
   const units = splitTime(remaining ?? 0);
