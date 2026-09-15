@@ -13,6 +13,8 @@ import {
   Wrench,
 } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
+import Countdown from "@/components/Countdown";
 import DepartmentCard from "@/components/DepartmentCard";
 import { Button } from "@/components/ui/button";
 
@@ -73,8 +75,14 @@ const departments: Department[] = [
 
 //Doesn't really make sense to have this here, but we keep the logic for when we have a db
 const isRecruiting = true;
+//hardcoded until recruitment settings live in the db
+const recruitmentDeadline = new Date("2026-10-09T23:59:00+01:00");
 
 export default function Home() {
+  //flipped on the client, so after the deadline the prerendered "Join Us" shows until hydration
+  const [deadlinePassed, setDeadlinePassed] = useState(false);
+  const applicationsOpen = isRecruiting && !deadlinePassed;
+
   return (
     <div className="min-h-screen bg-background">
       <section className="relative bg-gradient-to-br from-primary via-primary/90 to-primary/80 text-primary-foreground">
@@ -115,12 +123,20 @@ export default function Home() {
             </p>
 
             <div className="pt-8">
+              {applicationsOpen && (
+                <div className="mb-8">
+                  <Countdown
+                    target={recruitmentDeadline}
+                    onEnd={() => setDeadlinePassed(true)}
+                  />
+                </div>
+              )}
               <Button
                 size={"lg"}
                 className="bg-background hover:bg-secondary/90 text-secondary-foreground text-lg px-8 py-4 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                 asChild
               >
-                {isRecruiting ? (
+                {applicationsOpen ? (
                   <a
                     href="https://forms.gle/FXjf82jfQjgCom789"
                     target="_blank"
@@ -133,18 +149,20 @@ export default function Home() {
                 )}
               </Button>
 
-              <p className="text-white/80 text-sm mt-4 max-w-md mx-auto">
-                Follow us on{" "}
-                <a
-                  href="https://www.instagram.com/acmfeup/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline hover:text-white transition-colors"
-                >
-                  Instagram
-                </a>{" "}
-                for recruitment announcements and updates
-              </p>
+              {!applicationsOpen && (
+                <p className="text-white/80 text-sm mt-4 max-w-md mx-auto">
+                  Follow us on{" "}
+                  <a
+                    href="https://www.instagram.com/acmfeup/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-white transition-colors"
+                  >
+                    Instagram
+                  </a>{" "}
+                  for recruitment announcements and updates
+                </p>
+              )}
             </div>
           </div>
         </div>
