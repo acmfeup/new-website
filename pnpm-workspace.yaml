@@ -1,2 +1,7 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+# sharp is Next.js' image optimiser; it needs its native postinstall.
 allowBuilds:
-  sharp: set this to true or false
+  sharp: true
