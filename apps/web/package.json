@@ -1,5 +1,5 @@
 {
-  "name": "@plataforma/web",
+  "name": "@acmfeup/web",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.4",
-    "@plataforma/config": "workspace:*",
+    "@acmfeup/config": "workspace:*",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^24",
     "@types/react": "^19",

@@ -1,5 +1,5 @@
 {
-  "name": "plataforma",
+  "name": "acmfeup",
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@12.4.2",
@@ -13,15 +13,15 @@
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "format": "biome format --write .",
-    "db:generate": "pnpm --filter @plataforma/api db:generate",
-    "db:migrate": "pnpm --filter @plataforma/api db:migrate",
-    "db:studio": "pnpm --filter @plataforma/api db:studio",
-    "db:seed": "pnpm --filter @plataforma/api db:seed",
-    "db:reset": "pnpm --filter @plataforma/api db:reset"
+    "db:generate": "pnpm --filter @acmfeup/api db:generate",
+    "db:migrate": "pnpm --filter @acmfeup/api db:migrate",
+    "db:studio": "pnpm --filter @acmfeup/api db:studio",
+    "db:seed": "pnpm --filter @acmfeup/api db:seed",
+    "db:reset": "pnpm --filter @acmfeup/api db:reset"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.4",
-    "@plataforma/config": "workspace:*",
+    "@acmfeup/config": "workspace:*",
     "turbo": "2.10.13",
     "typescript": "5.9.3"
   }
