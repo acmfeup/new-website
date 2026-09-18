@@ -12,7 +12,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "db:seed": "nest build && node dist/db/seed.js",
-    "db:reset": "docker compose -f ../../docker-compose.yml down -v && docker compose -f ../../docker-compose.yml up -d --wait && pnpm db:migrate"
+    "db:reset": "docker compose -f ../../docker-compose.yml down -v && docker compose -f ../../docker-compose.yml up -d --wait && pnpm db:migrate",
+    "test": "vitest run"
   },
   "dependencies": {
     "@nestjs/common": "12.0.3",
@@ -24,12 +25,13 @@
     "rxjs": "^7.8.2"
   },
   "devDependencies": {
+    "@acmfeup/config": "workspace:*",
     "@biomejs/biome": "2.2.4",
     "@nestjs/cli": "12.0.3",
-    "@acmfeup/config": "workspace:*",
     "@types/node": "^24",
     "@types/pg": "^8.23.1",
     "drizzle-kit": "^0.31.10",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "vitest": "5.0.1"
   }
 }

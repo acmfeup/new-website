@@ -2,8 +2,11 @@ packages:
   - "apps/*"
   - "packages/*"
 
-# Both need their native postinstall: sharp is Next.js' image optimiser,
-# esbuild is how drizzle-kit loads drizzle.config.ts.
+# Dependencies allowed to run their postinstall:
+# - esbuild: how drizzle-kit loads drizzle.config.ts
+# - lefthook: installs the git hooks on pnpm install (skipped in CI)
+# - sharp: Next.js' image optimiser
 allowBuilds:
   esbuild: true
+  lefthook: true
   sharp: true
