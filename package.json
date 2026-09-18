@@ -20,8 +20,9 @@
     "db:reset": "pnpm --filter @acmfeup/api db:reset"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.2.4",
     "@acmfeup/config": "workspace:*",
+    "@biomejs/biome": "2.2.4",
+    "lefthook": "2.1.14",
     "turbo": "2.10.13",
     "typescript": "5.9.3"
   }
