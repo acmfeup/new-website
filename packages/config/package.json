@@ -1,5 +1,5 @@
 {
-  "name": "@plataforma/config",
+  "name": "@acmfeup/config",
   "version": "0.0.0",
   "private": true,
   "files": ["biome.json", "tsconfig.base.json"]
