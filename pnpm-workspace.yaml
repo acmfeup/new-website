@@ -2,6 +2,8 @@ packages:
   - "apps/*"
   - "packages/*"
 
-# sharp is Next.js' image optimiser; it needs its native postinstall.
+# Both need their native postinstall: sharp is Next.js' image optimiser,
+# esbuild is how drizzle-kit loads drizzle.config.ts.
 allowBuilds:
+  esbuild: true
   sharp: true

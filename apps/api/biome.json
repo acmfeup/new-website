@@ -2,6 +2,10 @@
   "$schema": "https://biomejs.dev/schemas/2.2.4/schema.json",
   "root": false,
   "extends": ["@plataforma/config/biome.json"],
+  "files": {
+    "ignoreUnknown": true,
+    "includes": ["**", "!**/node_modules", "!**/dist", "!drizzle"]
+  },
   "linter": {
     "rules": {
       "style": {
