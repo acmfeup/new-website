@@ -12,7 +12,12 @@
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
-    "format": "biome format --write ."
+    "format": "biome format --write .",
+    "db:generate": "pnpm --filter @plataforma/api db:generate",
+    "db:migrate": "pnpm --filter @plataforma/api db:migrate",
+    "db:studio": "pnpm --filter @plataforma/api db:studio",
+    "db:seed": "pnpm --filter @plataforma/api db:seed",
+    "db:reset": "pnpm --filter @plataforma/api db:reset"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.4",

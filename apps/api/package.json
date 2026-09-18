@@ -7,12 +7,18 @@
     "build": "nest build",
     "start": "node dist/main",
     "lint": "biome check",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "db:seed": "nest build && node dist/db/seed.js",
+    "db:reset": "docker compose -f ../../docker-compose.yml down -v && docker compose -f ../../docker-compose.yml up -d --wait && pnpm db:migrate"
   },
   "dependencies": {
     "@nestjs/common": "12.0.3",
     "@nestjs/core": "12.0.3",
     "@nestjs/platform-express": "12.0.3",
+    "drizzle-orm": "^0.45.2",
     "pg": "^8.23.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2"
@@ -23,6 +29,7 @@
     "@plataforma/config": "workspace:*",
     "@types/node": "^24",
     "@types/pg": "^8.23.1",
+    "drizzle-kit": "^0.31.10",
     "typescript": "5.9.3"
   }
 }
