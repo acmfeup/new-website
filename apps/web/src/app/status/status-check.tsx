@@ -52,8 +52,10 @@ const STATES: Record<
 async function fetchHealth(): Promise<Status> {
   try {
     const res = await fetch(`${API_URL}/health`, { cache: "no-store" });
+    // A 503 is the API saying the db is down. Any other error status (a 404
+    // from a wrong URL, a 500) means we did not get a health answer at all.
+    if (!res.ok && res.status !== 503) throw new Error(`HTTP ${res.status}`);
     const body: { db?: string } = await res.json();
-    // Any JSON answer means the API is up; a 503 only means the db is not.
     return { api: "up", db: body.db === "up" ? "up" : "down" };
   } catch (error) {
     // No usable answer at all: API down, wrong URL, or CORS blocked it.
