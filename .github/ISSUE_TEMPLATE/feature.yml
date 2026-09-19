@@ -1,0 +1,49 @@
+name: Feature
+description: Propose something new for the site or the platform
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What is missing or painful today, and for whom?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: What should exist once this is done? Sketches and links welcome.
+    validations:
+      required: true
+
+  - type: textarea
+    id: done-when
+    attributes:
+      label: Done when
+      description: Outcomes a reviewer can check one by one. This is what makes the issue Ready.
+      placeholder: |
+        - [ ] A member can ...
+        - [ ] The API returns ...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      multiple: true
+      options:
+        - web
+        - api
+        - database
+        - tooling / CI
+    validations:
+      required: true
+
+  - type: textarea
+    id: open-questions
+    attributes:
+      label: Open questions
+      description: Anything still undecided. An issue with open questions is not Ready yet.
