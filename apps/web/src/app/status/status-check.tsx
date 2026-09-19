@@ -95,7 +95,7 @@ export default function StatusCheck() {
           <StatusRow label="Database" check={status.db} />
         </ul>
         {status.error && (
-          <p className="mt-4 text-sm text-destructive break-words">
+          <p className="mt-4 text-sm text-destructive wrap-break-word">
             Could not reach the API: {status.error}
           </p>
         )}
