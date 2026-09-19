@@ -1,2 +1,12 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+# Dependencies allowed to run their postinstall:
+# - esbuild: how drizzle-kit loads drizzle.config.ts
+# - lefthook: installs the git hooks on pnpm install (skipped in CI)
+# - sharp: Next.js' image optimiser
 allowBuilds:
-  sharp: set this to true or false
+  esbuild: true
+  lefthook: true
+  sharp: true
