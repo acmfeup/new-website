@@ -9,8 +9,9 @@ if (existsSync(envFile)) {
 }
 
 // Defaults match docker-compose.yml so a fresh clone needs no .env at all.
+// `||`, not `??`: a blanked value in .env should fall back to the default too.
 export const DATABASE_URL =
-  process.env.DATABASE_URL ??
+  process.env.DATABASE_URL ||
   "postgresql://acmfeup:acmfeup@localhost:5432/acmfeup";
 
-export const API_PORT = Number(process.env.API_PORT ?? 4000);
+export const API_PORT = Number(process.env.API_PORT || 4000);
