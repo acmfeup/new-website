@@ -25,6 +25,17 @@ DEPLOYER_SA="github-deployer@$PROJECT_ID.iam.gserviceaccount.com"
 step() { printf '\n==> %s\n' "$*"; }
 # The describe calls are existence checks; their "not found" output is noise.
 exists() { "$@" >/dev/null 2>&1; }
+# A service account created seconds ago is not yet visible to IAM, so binding a
+# role to it fails with "does not exist". Retry for up to a minute; the last
+# attempt shows its error.
+retry() {
+  for _ in 1 2 3 4 5 6; do
+    "$@" 2>/dev/null && return
+    echo "  not visible to IAM yet, retrying in 10s..." >&2
+    sleep 10
+  done
+  "$@"
+}
 
 PROJECT_NUMBER="$(gcloud projects describe "$PROJECT_ID" --format='value(projectNumber)')"
 
@@ -87,17 +98,17 @@ fi
 
 step "Permissions"
 # Runtime: read this one secret, nothing else.
-gcloud secrets add-iam-policy-binding "$SECRET" --member="serviceAccount:$RUNTIME_SA" \
+retry gcloud secrets add-iam-policy-binding "$SECRET" --member="serviceAccount:$RUNTIME_SA" \
   --role=roles/secretmanager.secretAccessor >/dev/null
 # Deployer: push images to this repository, deploy the service and the
 # migration job, and run them as the runtime account. It has no direct access to
 # the secret, but code it deploys runs with it: whoever controls what this
 # account deploys (the deploy workflow on main) can reach the connection string.
-gcloud artifacts repositories add-iam-policy-binding "$REPO" --location="$REGION" \
+retry gcloud artifacts repositories add-iam-policy-binding "$REPO" --location="$REGION" \
   --member="serviceAccount:$DEPLOYER_SA" --role=roles/artifactregistry.writer >/dev/null
-gcloud projects add-iam-policy-binding "$PROJECT_ID" --member="serviceAccount:$DEPLOYER_SA" \
+retry gcloud projects add-iam-policy-binding "$PROJECT_ID" --member="serviceAccount:$DEPLOYER_SA" \
   --role=roles/run.developer --condition=None >/dev/null
-gcloud iam service-accounts add-iam-policy-binding "$RUNTIME_SA" \
+retry gcloud iam service-accounts add-iam-policy-binding "$RUNTIME_SA" \
   --member="serviceAccount:$DEPLOYER_SA" --role=roles/iam.serviceAccountUser >/dev/null
 
 step "Workload Identity Federation for $GITHUB_REPO"
@@ -125,7 +136,7 @@ else
     --issuer-uri=https://token.actions.githubusercontent.com \
     --attribute-mapping="$mapping" --attribute-condition="$condition"
 fi
-gcloud iam service-accounts add-iam-policy-binding "$DEPLOYER_SA" \
+retry gcloud iam service-accounts add-iam-policy-binding "$DEPLOYER_SA" \
   --role=roles/iam.workloadIdentityUser \
   --member="principalSet://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/$POOL/attribute.repository_id/$repo_id" \
   >/dev/null
