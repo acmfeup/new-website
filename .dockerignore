@@ -1,0 +1,12 @@
+# Keep secrets, local builds and the web app out of the API image's build context.
+.env*
+**/node_modules
+**/dist
+**/.next
+**/*.tsbuildinfo
+.git
+.turbo
+.idea
+.direnv
+apps/web/*
+!apps/web/package.json
