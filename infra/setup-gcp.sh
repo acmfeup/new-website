@@ -143,32 +143,35 @@ retry gcloud iam service-accounts add-iam-policy-binding "$DEPLOYER_SA" \
 
 step "Cloud Run service '$SERVICE'"
 # Created here with a placeholder image so that making it public stays a human
-# decision: the deployer can deploy new revisions but cannot change IAM.
+# decision: the deployer can deploy new revisions but not change who can call them.
 if ! exists gcloud run services describe "$SERVICE" --region="$REGION"; then
   gcloud run deploy "$SERVICE" --region="$REGION" \
     --image=us-docker.pkg.dev/cloudrun/container/hello \
     --service-account="$RUNTIME_SA" --no-allow-unauthenticated \
     --min-instances=0 --max-instances=1
 fi
-if ! err="$(gcloud run services add-iam-policy-binding "$SERVICE" --region="$REGION" \
-  --member=allUsers --role=roles/run.invoker 2>&1 >/dev/null)"; then
-  if grep -qiE 'allowedPolicyMemberDomains|permitted customer|FAILED_PRECONDITION' <<<"$err"; then
-    cat >&2 <<EOF
+# Public by turning off Cloud Run's invoker check, not by granting run.invoker
+# to allUsers: the acmfeup.eu organisation forbids allUsers bindings ("Domain
+# restricted sharing"), and this setting only affects this one service. The
+# site calls the API from visitors' browsers, so it has to be public.
+invoker_disabled="$(gcloud run services describe "$SERVICE" --region="$REGION" \
+  --format='value(metadata.annotations."run.googleapis.com/invoker-iam-disabled")')"
+if [ "$invoker_disabled" != "true" ]; then
+  if ! err="$(gcloud run services update "$SERVICE" --region="$REGION" \
+    --no-invoker-iam-check 2>&1 >/dev/null)"; then
+    if grep -qi 'requireInvokerIam' <<<"$err"; then
+      cat >&2 <<EOF
 
-The API could not be made public: an organisation policy on this project
-(iam.allowedPolicyMemberDomains, "Domain restricted sharing") forbids granting
-roles to allUsers. The site calls the API from the browser, so it has to be public.
-
-What to do, then run this script again:
-  - Ask an organisation admin to override the policy for this project
-    (IAM & Admin > Organization Policies > "Domain restricted sharing" >
-    Manage policy > Override parent's policy > Allow all), or
-  - Create the project outside the organisation (no organisation).
+The API could not be made public: the organisation policy
+run.managed.requireInvokerIam forbids turning off Cloud Run's invoker check.
+Someone with Organization Policy Administrator on the organisation has to turn
+that policy off for this project, then run this script again.
 EOF
-  else
-    echo "$err" >&2
+    else
+      echo "$err" >&2
+    fi
+    exit 1
   fi
-  exit 1
 fi
 
 url="$(gcloud run services describe "$SERVICE" --region="$REGION" --format='value(status.url)')"
