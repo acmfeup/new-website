@@ -90,7 +90,9 @@ step "Permissions"
 gcloud secrets add-iam-policy-binding "$SECRET" --member="serviceAccount:$RUNTIME_SA" \
   --role=roles/secretmanager.secretAccessor >/dev/null
 # Deployer: push images to this repository, deploy the service and the
-# migration job, and run them as the runtime account. It cannot read the secret.
+# migration job, and run them as the runtime account. It has no direct access to
+# the secret, but code it deploys runs with it: whoever controls what this
+# account deploys (the deploy workflow on main) can reach the connection string.
 gcloud artifacts repositories add-iam-policy-binding "$REPO" --location="$REGION" \
   --member="serviceAccount:$DEPLOYER_SA" --role=roles/artifactregistry.writer >/dev/null
 gcloud projects add-iam-policy-binding "$PROJECT_ID" --member="serviceAccount:$DEPLOYER_SA" \
@@ -104,9 +106,10 @@ repo_id="$(curl -fsS "https://api.github.com/repos/$GITHUB_REPO" | jq -r .id)" |
 if [ -z "$repo_id" ]; then
   read -rp "Could not look up the GitHub repo id. Enter it (gh api repos/$GITHUB_REPO --jq .id): " repo_id
 fi
-# Only workflows running on main of this repo get credentials: PRs, forks and
-# other branches are rejected by the provider before any role is checked.
-condition="assertion.repository_id=='$repo_id' && assertion.ref=='refs/heads/main'"
+# Only the deploy workflow, running on main of this repo, gets credentials. PRs,
+# forks, other branches and any other workflow on main (say a future
+# pull_request_target one) are rejected before any role is checked.
+condition="assertion.repository_id=='$repo_id' && assertion.ref=='refs/heads/main' && assertion.job_workflow_ref=='$GITHUB_REPO/.github/workflows/deploy-api.yml@refs/heads/main'"
 mapping="google.subject=assertion.sub,attribute.repository_id=assertion.repository_id,attribute.ref=assertion.ref"
 if ! exists gcloud iam workload-identity-pools describe "$POOL" --location=global; then
   gcloud iam workload-identity-pools create "$POOL" --location=global --display-name="GitHub Actions"
