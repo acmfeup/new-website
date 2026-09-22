@@ -49,6 +49,20 @@ Run these from the repo root.
 
 To run something in one package only: `pnpm --filter @acmfeup/api <script>`.
 
+## Deploy
+
+The web app deploys on Vercel. The API deploys itself: every merge to `main` that touches it runs [`deploy-api.yml`](.github/workflows/deploy-api.yml), which
+
+1. builds `apps/api/Dockerfile` and pushes it to Artifact Registry,
+2. runs the migrations as the `api-migrate` Cloud Run Job and waits for it,
+3. deploys the new image to the `api` Cloud Run service (europe-west1, scales to zero, at most 2 instances).
+
+If the migrations fail, step 3 never runs and the previous version stays live. The database is on Neon (Frankfurt). Its connection string lives only in Secret Manager (`database-url`): not in the repo, not in GitHub. GitHub gets short-lived credentials through Workload Identity Federation, and only for workflows on `main`.
+
+**Migrations run before the new code is live, so they must be backwards compatible with the API version currently running.** For the whole window between them, and after any rollback, the old code runs against the new schema. The rules are in [CONTRIBUTING.md](CONTRIBUTING.md#database-migrations).
+
+The GCP side is created by [`infra/setup-gcp.sh`](infra/setup-gcp.sh). Run it once in Cloud Shell (`bash infra/setup-gcp.sh <PROJECT_ID>`). Running it again is safe, and it is also how you rotate the database password: paste the new connection string when it asks, then run the Deploy API workflow by hand, so that the running instances pick up the new string.
+
 ## Contributing
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening your first issue or PR. If you work with a coding agent, it should read [AGENTS.md](AGENTS.md).
