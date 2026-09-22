@@ -1,18 +1,16 @@
 name: Deploy API
 
-# Every merge to main that can change the API image. The GCP resources and the
-# three repository variables come from infra/setup-gcp.sh.
+# Runs after "PR checks" passes on a push to main, so nothing deploys that CI
+# has not checked as merged. workflow_run cannot filter by path, so every green
+# merge redeploys; with nothing new, the image is cached and the migrations are
+# a no-op. CI runs on main queue in order (see pr.yml's concurrency), so
+# deploys arrive in merge order too. The GCP resources and the three repository
+# variables come from infra/setup-gcp.sh.
 on:
-  push:
+  workflow_run:
+    workflows: [PR checks]
+    types: [completed]
     branches: [main]
-    paths:
-      - apps/api/**
-      - packages/config/**
-      - package.json
-      - pnpm-lock.yaml
-      - pnpm-workspace.yaml
-      - .dockerignore
-      - .github/workflows/deploy-api.yml
   workflow_dispatch:
 
 # One deploy at a time, and never cancel one halfway through a migration.
@@ -28,16 +26,28 @@ permissions:
 
 env:
   REGION: europe-west1
-  IMAGE: europe-west1-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/api/api:${{ github.sha }}
+  # The commit CI checked, not whatever main points to by now.
+  SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
   RUNTIME_SA: api-runtime@${{ vars.GCP_PROJECT_ID }}.iam.gserviceaccount.com
   CLOUDSDK_CORE_PROJECT: ${{ vars.GCP_PROJECT_ID }}
 
 jobs:
   deploy:
+    # branches: [main] above matches a fork PR whose branch is also called main,
+    # so also require a green push to this repository.
+    if: >-
+      github.event_name == 'workflow_dispatch' || (
+        github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.event == 'push' &&
+        github.event.workflow_run.head_repository.full_name == github.repository
+      )
     runs-on: ubuntu-latest
+    env:
+      IMAGE: europe-west1-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/api/api:${{ github.event.workflow_run.head_sha || github.sha }}
     steps:
       - uses: actions/checkout@v7
         with:
+          ref: ${{ env.SHA }}
           persist-credentials: false
 
       - uses: google-github-actions/auth@v3
@@ -54,8 +64,8 @@ jobs:
           docker push "$IMAGE"
 
       # Runs inside GCP as the runtime account, so the connection string never
-      # reaches this runner. --wait makes the step fail if the migration fails,
-      # which stops the workflow before the new revision is deployed: the
+      # passes through this runner. --wait makes the step fail if the migration
+      # fails, which stops the workflow before the new revision is deployed: the
       # previous one keeps serving.
       - name: Run migrations
         run: |
@@ -68,12 +78,15 @@ jobs:
             --max-retries=0 --task-timeout=5m \
             --execute-now --wait
 
-      # ^;^ switches gcloud's list separator so the comma stays inside CORS_ORIGIN.
-      - name: Deploy the service
+      # --no-traffic: the new revision only gets the "candidate" URL until its
+      # /health passes below. ^;^ switches gcloud's list separator so the comma
+      # stays inside CORS_ORIGIN.
+      - name: Deploy the new revision without traffic
         run: |
           gcloud run deploy api \
             --region="$REGION" \
             --image="$IMAGE" \
+            --no-traffic --tag=candidate \
             --port=4000 \
             --service-account="$RUNTIME_SA" \
             --set-secrets=DATABASE_URL=database-url:latest \
@@ -83,7 +96,13 @@ jobs:
             --quiet
 
       # Retries cover the cold start of the new instance and of Neon's compute.
-      - name: Check /health
+      # If this fails, the workflow stops and the previous revision keeps all
+      # the traffic.
+      - name: Check /health on the new revision
         run: |
-          url="$(gcloud run services describe api --region="$REGION" --format='value(status.url)')"
+          url="$(gcloud run services describe api --region="$REGION" --format=json \
+            | jq -r '.status.traffic[] | select(.tag == "candidate") | .url')"
           curl -fsS --retry 5 --retry-all-errors "$url/health"
+
+      - name: Send all traffic to the new revision
+        run: gcloud run services update-traffic api --region="$REGION" --to-latest
