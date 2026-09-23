@@ -6,7 +6,9 @@ on:
     branches: [main]
 
 # A new push to a PR cancels the run still going for its previous commit.
-# Runs on main are never cancelled, so every merge gets a full result.
+# A run already going on main is never cancelled, but GitHub still replaces a
+# pending run on main when a newer one queues, so a merge in between can end up
+# with no run of its own; the newer run checks its changes too.
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
@@ -90,6 +92,19 @@ jobs:
             echo "::error::schema.ts has changes with no migration. Run pnpm db:generate and commit apps/api/drizzle."
             exit 1
           fi
+
+  # Builds the production image of the API, without pushing it. The Dockerfile
+  # only copies packages/config and apps/api, so if the API starts depending on
+  # a new package in packages/, this job goes red here instead of the deploy
+  # breaking on main.
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - run: docker build -f apps/api/Dockerfile .
 
   gitleaks:
     runs-on: ubuntu-latest
