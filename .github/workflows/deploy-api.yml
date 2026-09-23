@@ -2,10 +2,13 @@ name: Deploy API
 
 # Runs after "PR checks" passes on a push to main, so nothing deploys that CI
 # has not checked as merged. workflow_run cannot filter by path, so every green
-# merge redeploys; with nothing new, the image is cached and the migrations are
-# a no-op. CI runs on main queue in order (see pr.yml's concurrency), so
-# deploys arrive in merge order too. The GCP resources and the three repository
-# variables come from infra/setup-gcp.sh.
+# merge redeploys: the image is rebuilt from scratch (each runner starts empty)
+# and the migrations are a no-op when there is nothing new.
+# CI runs on main start in merge order (see pr.yml's concurrency), but a pending
+# run is replaced when a newer one queues. So an intermediate merge can end up
+# with no CI run and no deploy of its own; the next merge's deploy includes it.
+# The GCP resources and the three repository variables come from
+# infra/setup-gcp.sh.
 on:
   workflow_run:
     workflows: [PR checks]
@@ -13,7 +16,8 @@ on:
     branches: [main]
   workflow_dispatch:
 
-# One deploy at a time, and never cancel one halfway through a migration.
+# One deploy at a time, and never cancel one halfway through a migration. A
+# pending deploy is still replaced by a newer one, which is the one to keep.
 concurrency:
   group: deploy-api
   cancel-in-progress: false
