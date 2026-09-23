@@ -6,7 +6,9 @@ on:
     branches: [main]
 
 # A new push to a PR cancels the run still going for its previous commit.
-# Runs on main are never cancelled, so every merge gets a full result.
+# A run already going on main is never cancelled, but GitHub still replaces a
+# pending run on main when a newer one queues, so a merge in between can end up
+# with no run of its own; the newer run checks its changes too.
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
