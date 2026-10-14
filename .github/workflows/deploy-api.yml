@@ -1,0 +1,115 @@
+name: Deploy API
+
+# Runs after "PR checks" passes on a push to main, so nothing deploys that CI
+# has not checked as merged. workflow_run cannot filter by path, so every green
+# merge redeploys: the image is rebuilt from scratch (each runner starts empty)
+# and the migrations are a no-op when there is nothing new.
+# CI runs on main start in merge order (see pr.yml's concurrency), but a pending
+# run is replaced when a newer one queues. So an intermediate merge can end up
+# with no CI run and no deploy of its own; the next merge's deploy includes it.
+# The GCP resources and the three repository variables come from
+# infra/setup-gcp.sh.
+on:
+  workflow_run:
+    workflows: [PR checks]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+# One deploy at a time, and never cancel one halfway through a migration. A
+# pending deploy is still replaced by a newer one, which is the one to keep.
+concurrency:
+  group: deploy-api
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  # Lets the job request the OIDC token that Workload Identity Federation trades
+  # for short-lived GCP credentials. There is no service account key anywhere.
+  id-token: write
+
+env:
+  REGION: europe-west1
+  # The commit CI checked, not whatever main points to by now.
+  SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+  RUNTIME_SA: api-runtime@${{ vars.GCP_PROJECT_ID }}.iam.gserviceaccount.com
+  CLOUDSDK_CORE_PROJECT: ${{ vars.GCP_PROJECT_ID }}
+
+jobs:
+  deploy:
+    # branches: [main] above matches a fork PR whose branch is also called main,
+    # so also require a green push to this repository.
+    if: >-
+      github.event_name == 'workflow_dispatch' || (
+        github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.event == 'push' &&
+        github.event.workflow_run.head_repository.full_name == github.repository
+      )
+    runs-on: ubuntu-latest
+    env:
+      IMAGE: europe-west1-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/api/api:${{ github.event.workflow_run.head_sha || github.sha }}
+    # Actions pinned by commit SHA: this is the only workflow that can get GCP
+    # credentials (id-token: write), and a tag can be moved, a SHA cannot. To
+    # update one: gh api repos/<owner>/<action>/commits/<tag> --jq .sha
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.SHA }}
+          persist-credentials: false
+
+      - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOYER_SA }}
+
+      - uses: google-github-actions/setup-gcloud@aa5489c8933f4cc7a4f7d45035b3b1440c9c10db # v3.0.1
+
+      - name: Build and push the image
+        run: |
+          gcloud auth configure-docker europe-west1-docker.pkg.dev --quiet
+          docker build -f apps/api/Dockerfile -t "$IMAGE" .
+          docker push "$IMAGE"
+
+      # Runs inside GCP as the runtime account, so the connection string never
+      # passes through this runner. --wait makes the step fail if the migration
+      # fails, which stops the workflow before the new revision is deployed: the
+      # previous one keeps serving.
+      - name: Run migrations
+        run: |
+          gcloud run jobs deploy api-migrate \
+            --region="$REGION" \
+            --image="$IMAGE" \
+            --command=node --args=dist/db/migrate.js \
+            --service-account="$RUNTIME_SA" \
+            --set-secrets=DATABASE_URL=database-url:latest \
+            --max-retries=0 --task-timeout=5m \
+            --execute-now --wait
+
+      # --no-traffic: the new revision only gets the "candidate" URL until its
+      # /health passes below. ^;^ switches gcloud's list separator so the comma
+      # stays inside CORS_ORIGIN.
+      - name: Deploy the new revision without traffic
+        run: |
+          gcloud run deploy api \
+            --region="$REGION" \
+            --image="$IMAGE" \
+            --no-traffic --tag=candidate \
+            --port=4000 \
+            --service-account="$RUNTIME_SA" \
+            --set-secrets=DATABASE_URL=database-url:latest \
+            --set-env-vars="^;^CORS_ORIGIN=https://acmfeup.eu,https://www.acmfeup.eu" \
+            --min-instances=0 --max-instances=2 \
+            --cpu=1 --memory=512Mi \
+            --quiet
+
+      # Retries cover the cold start of the new instance and of Neon's compute.
+      # If this fails, the workflow stops and the previous revision keeps all
+      # the traffic.
+      - name: Check /health on the new revision
+        run: |
+          url="$(gcloud run services describe api --region="$REGION" --format=json \
+            | jq -r '.status.traffic[] | select(.tag == "candidate") | .url')"
+          curl -fsS --retry 5 --retry-all-errors "$url/health"
+
+      - name: Send all traffic to the new revision
+        run: gcloud run services update-traffic api --region="$REGION" --to-latest
