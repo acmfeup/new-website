@@ -49,6 +49,22 @@ Run these from the repo root.
 
 To run something in one package only: `pnpm --filter @acmfeup/api <script>`.
 
+## Deploy
+
+The web app deploys on Vercel. The API deploys itself: once CI passes on a merge to `main`, [`deploy-api.yml`](.github/workflows/deploy-api.yml)
+
+1. builds `apps/api/Dockerfile` and pushes it to Artifact Registry,
+2. runs the migrations as the `api-migrate` Cloud Run Job and waits for it,
+3. deploys the new image to the `api` Cloud Run service (europe-west1, scales to zero, at most 2 instances) without traffic, checks its `/health`, and only then moves traffic to it.
+
+If the migrations or the health check fail, the workflow stops and the previous version stays live. The database is on Neon (Frankfurt). Its connection string is stored only in Secret Manager (`database-url`): not in the repo, not in GitHub, and it never passes through the GitHub runner. GitHub gets short-lived credentials through Workload Identity Federation, and only for `deploy-api.yml` running on `main`. The code that workflow deploys runs with the connection string, so merging to `main` is as sensitive as holding the string itself.
+
+Vercel preview deployments cannot call the production API: `CORS_ORIGIN` only allows `acmfeup.eu` and `www.acmfeup.eu`. This is on purpose. A preview runs new frontend code, which should not run against the production API and its data, and a `*.vercel.app` pattern would also match other people's projects.
+
+**Migrations run before the new code is live, so they must be backwards compatible with the API version currently running.** For the whole window between them, and after any rollback, the old code runs against the new schema. The rules are in [CONTRIBUTING.md](CONTRIBUTING.md#database-migrations).
+
+The GCP side is created by [`infra/setup-gcp.sh`](infra/setup-gcp.sh). Run it once in Cloud Shell (`bash infra/setup-gcp.sh <PROJECT_ID>`), and set the three repository variables it prints, before the first merge that should deploy; until then the deploy workflow fails at authentication. Running it again is safe, and it is also how you rotate the database password: paste the new connection string when it asks, then run the Deploy API workflow by hand, so that the running instances pick up the new string.
+
 ## Contributing
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening your first issue or PR. If you work with a coding agent, it should read [AGENTS.md](AGENTS.md).
