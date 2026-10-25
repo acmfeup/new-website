@@ -62,7 +62,7 @@ There is a single `.env`, at the repo root. `apps/api/src/config/env.ts` and `ap
 
 **Tests**
 - Vitest, next to the code: `foo.ts` gets `foo.test.ts`.
-- Vitest's esbuild does not emit decorator metadata, so tests that need Nest DI (`Test.createTestingModule`) need `unplugin-swc` first. Prefer testing plain functions.
+- Vitest 5 runs on Vite 8, which emits decorator metadata, so tests can use Nest DI (`Test.createTestingModule`) once `@nestjs/testing` is added to `apps/api`. Prefer testing plain functions.
 
 **Web**
 - Reuse `src/components/ui` and the tokens in `src/app/globals.css`. Do not invent colours.
