@@ -32,14 +32,13 @@ export default function NotFound() {
         </div>
 
         <div className="space-y-4">
-          <Link href="/">
-            <Button
-              size="lg"
-              className="bg-white text-[#002F6C] hover:bg-white/90 font-semibold px-8"
-            >
-              Back to Home
-            </Button>
-          </Link>
+          <Button
+            asChild
+            size="lg"
+            className="bg-white text-primary hover:bg-white/90 font-semibold px-8"
+          >
+            <Link href="/">Back to Home</Link>
+          </Button>
           <div className="text-white/40 text-sm mt-2">
             or check out our{" "}
             <a
