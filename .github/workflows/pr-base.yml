@@ -1,0 +1,27 @@
+name: PR base
+
+# Only release PRs (dev) and hotfix/* branches go straight to main. Everything
+# else targets dev. The check is not required by the ruleset, so a red run is a
+# warning on the PR, not a block. Re-runs on "edited" so retargeting clears it.
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, edited]
+
+permissions: {}
+
+jobs:
+  base:
+    runs-on: ubuntu-latest
+    steps:
+      # No branches: [main] filter on purpose: retargeting a PR to dev must run
+      # this again (and pass) to replace the red run on the same commit.
+      - name: Check the PR comes from dev or hotfix/*
+        if: >-
+          github.base_ref == 'main' && (
+            github.event.pull_request.head.repo.full_name != github.repository || (
+              github.head_ref != 'dev' && !startsWith(github.head_ref, 'hotfix/')
+            )
+          )
+        run: |
+          echo "::error::PRs target dev. Only dev (releases) and hotfix/* branches go to main. Change the base with Edit next to the PR title."
+          exit 1

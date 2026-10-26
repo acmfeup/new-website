@@ -1,3 +1,5 @@
+<!-- Base branch: dev. Only release (dev → main) and hotfix/* PRs target main. -->
+
 ## What changes
 
 <!-- One or two sentences on what this PR does and why. -->

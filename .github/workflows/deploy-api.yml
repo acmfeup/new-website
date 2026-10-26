@@ -7,6 +7,9 @@ name: Deploy API
 # CI runs on main start in merge order (see pr.yml's concurrency), but a pending
 # run is replaced when a newer one queues. So an intermediate merge can end up
 # with no CI run and no deploy of its own; the next merge's deploy includes it.
+# workflow_run always runs this file from the default branch, and the token GCP
+# checks carries that branch. infra/setup-gcp.sh only trusts main, so the
+# default branch must stay main, even though PRs target dev.
 # The GCP resources and the three repository variables come from
 # infra/setup-gcp.sh.
 on:
