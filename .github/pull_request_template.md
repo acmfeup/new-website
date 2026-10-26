@@ -1,5 +1,3 @@
-<!-- Base branch: dev. Only release (dev → main) and hotfix/* PRs target main. -->
-
 ## What changes
 
 <!-- One or two sentences on what this PR does and why. -->
@@ -20,4 +18,3 @@ Closes #
 - [ ] Tests cover the logic I added or changed
 - [ ] Migrations are backwards compatible: the code running in production still works after they apply
 - [ ] I did not edit a migration that is already merged, and new `.sql` files come from `pnpm db:generate`
-- [ ] No secrets, tokens or real credentials anywhere in the diff

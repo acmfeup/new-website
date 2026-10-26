@@ -7,7 +7,7 @@ Everything goes through an issue and a pull request. Nobody pushes to `main` or 
 1. **Open an issue** with the Feature or Bug template. If the idea is still fuzzy, open it anyway and leave the open questions in it.
 2. **Get it to Ready** (see below). Only Ready issues get picked up.
 3. **Assign yourself** and branch off `dev` with a Conventional Commits type as the prefix: `feat/member-directory`, `fix/status-cors`, `docs/readme-setup`.
-4. **Open a draft PR against `dev` within seven days** (see below), even if it holds a single commit. Link the issue with `Closes #123`. GitHub suggests `main` as the base, so change it, or use `gh pr create --base dev`, or open `https://github.com/acmfeup/new-website/compare/dev...<your-branch>?expand=1`. A PR into `main` gets a red "PR base" check.
+4. **Open a draft PR within seven days** (see below), even if it holds a single commit. It targets `dev`, the default branch. Link the issue with `Closes #123`.
 5. **Commit in small steps** with [Conventional Commits](https://www.conventionalcommits.org) messages (`feat(api): ...`, `fix(web): ...`). The pre-commit hook formats and lints staged files for you.
 6. **Mark the PR ready for review** once CI is green and every item of the PR checklist is ticked, or marked N/A with a reason.
 7. **Review.** The code owner is requested automatically. Answer the comments, push fixes, and re-request review.
@@ -22,9 +22,9 @@ git checkout dev && git pull && pnpm install && pnpm db:migrate && pnpm dev
 pnpm lint && pnpm typecheck && pnpm test && pnpm build
 ```
 
-Then open a PR from `dev` to `main` and merge it with **Create a merge commit**. Squashing would give `main` commits that `dev` doesn't have, and every later release would show conflicts. Merging to `main` deploys the API and runs the migrations on the production database.
+Then open a PR from `dev` to `main` (pick `main` as the base by hand) and merge it with **Create a merge commit**. Squashing would give `main` commits that `dev` doesn't have, and every later release would show conflicts. Merging to `main` deploys the API and runs the migrations on the production database.
 
-**Hotfixes** skip `dev`: branch `hotfix/<name>` off `main` (the one exception to the Conventional Commits prefixes), open the PR against `main`, and once it is merged, open a PR from `main` to `dev` so `dev` gets the fix too.
+**Hotfixes** skip `dev`: branch `hotfix/<name>` off `main` (the one exception to the Conventional Commits prefixes), open the PR against `main` (again by hand), and once it is merged, open a PR from `main` to `dev` so `dev` gets the fix too.
 
 ### Definition of Ready
 
