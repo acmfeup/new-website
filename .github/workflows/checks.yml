@@ -1,0 +1,126 @@
+name: Checks
+
+# Every check a change goes through. Never triggered on its own: pr.yml runs it
+# on pull requests, dev.yml on pushes to dev, deploy-api.yml on pushes to main
+# before deploying. Callers grant pull-requests: write (gitleaks asks for it)
+# and pass GITLEAKS_LICENSE. Concurrency is set by the callers: a group shared
+# by a caller and the workflow it calls would deadlock.
+on:
+  workflow_call:
+    secrets:
+      # Not required: PRs from forks get no secrets.
+      GITLEAKS_LICENSE:
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    name: ${{ matrix.task }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        task: [lint, typecheck, test, build]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      # Reads the pnpm version from packageManager in package.json.
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - uses: actions/cache@v6
+        with:
+          path: .turbo/cache
+          key: turbo-${{ matrix.task }}-${{ github.sha }}
+          restore-keys: turbo-${{ matrix.task }}-
+
+      - run: pnpm ${{ matrix.task }}
+
+  migrations:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_USER: acmfeup
+          POSTGRES_PASSWORD: acmfeup
+          POSTGRES_DB: acmfeup
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U acmfeup -d acmfeup"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      # Throwaway database that only lives for this job.
+      DATABASE_URL: postgresql://acmfeup:acmfeup@localhost:5432/acmfeup
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Apply every migration to an empty database
+        run: pnpm db:migrate
+
+      - name: Check schema.ts and the migrations are in sync
+        run: |
+          pnpm db:generate
+          drift="$(git status --porcelain apps/api/drizzle)"
+          if [ -n "$drift" ]; then
+            echo "$drift"
+            echo "::error::schema.ts has changes with no migration. Run pnpm db:generate and commit apps/api/drizzle."
+            exit 1
+          fi
+
+  # Builds the production image of the API, without pushing it. The Dockerfile
+  # only copies packages/config and apps/api, so if the API starts depending on
+  # a new package in packages/, this job goes red here instead of the deploy
+  # breaking on main.
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - run: docker build -f apps/api/Dockerfile .
+
+  gitleaks:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # Lets the action comment the finding on the offending PR line.
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # Full history, so every commit in the PR gets scanned, not just the tip.
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: gitleaks/gitleaks-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # acmfeup is an organisation, so the action needs a (free) license.
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+          GITLEAKS_VERSION: 8.30.1

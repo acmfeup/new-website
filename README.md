@@ -51,7 +51,7 @@ To run something in one package only: `pnpm --filter @acmfeup/api <script>`.
 
 ## Deploy
 
-The web app deploys on Vercel. The API deploys itself: once CI passes on a merge to `main`, [`deploy-api.yml`](.github/workflows/deploy-api.yml)
+The web app deploys on Vercel. The API deploys itself: on every merge to `main` (a release PR from `dev`, see [CONTRIBUTING.md](CONTRIBUTING.md#releasing)), [`deploy-api.yml`](.github/workflows/deploy-api.yml) runs the same checks as a PR, then
 
 1. builds `apps/api/Dockerfile` and pushes it to Artifact Registry,
 2. runs the migrations as the `api-migrate` Cloud Run Job and waits for it,

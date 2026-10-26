@@ -1,0 +1,25 @@
+name: Dev checks
+
+# Each PR was checked against dev as it was when its CI ran. This checks the
+# merged result, so PRs that break each other show up here. Nothing deploys
+# from dev. A newer push cancels the run still going: its commit contains
+# everything the older one had.
+on:
+  push:
+    branches: [dev]
+
+concurrency:
+  group: dev
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    uses: ./.github/workflows/checks.yml
+    permissions:
+      contents: read
+      pull-requests: write
+    secrets:
+      GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}

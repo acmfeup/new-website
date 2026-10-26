@@ -73,7 +73,7 @@ There is a single `.env`, at the repo root. `apps/api/src/config/env.ts` and `ap
 
 - Don't touch `vercel.json` or any Vercel setting. Deploy config is manual.
 - Don't commit secrets, even fake-looking ones in tests: gitleaks will fail the PR.
-- Don't push to `main`, and don't merge PRs. A human does that.
+- Don't push to `main` or `dev`, and don't merge PRs. A human does that. PRs target `dev`.
 
 ## Running servers during a task
 
