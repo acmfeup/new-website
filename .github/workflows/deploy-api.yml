@@ -1,60 +1,63 @@
 name: Deploy API
 
-# Runs after "PR checks" passes on a push to main, so nothing deploys that CI
-# has not checked as merged. workflow_run cannot filter by path, so every green
-# merge redeploys: the image is rebuilt from scratch (each runner starts empty)
-# and the migrations are a no-op when there is nothing new.
-# CI runs on main start in merge order (see pr.yml's concurrency), but a pending
-# run is replaced when a newer one queues. So an intermediate merge can end up
-# with no CI run and no deploy of its own; the next merge's deploy includes it.
+# Runs on every push to main: the same checks as a PR (checks.yml), then the
+# deploy, which only starts once every check has passed. The workflow runs from
+# main itself, so the OIDC token says refs/heads/main, the only ref the WIF
+# condition in infra/setup-gcp.sh trusts. Every push redeploys, even when
+# apps/api did not change: the image is rebuilt from scratch (each runner starts
+# empty) and the migrations are a no-op when there is nothing new.
 # The GCP resources and the three repository variables come from
 # infra/setup-gcp.sh.
 on:
-  workflow_run:
-    workflows: [PR checks]
-    types: [completed]
+  push:
     branches: [main]
   workflow_dispatch:
 
-# One deploy at a time, and never cancel one halfway through a migration. A
-# pending deploy is still replaced by a newer one, which is the one to keep.
+# One run at a time, and never cancel one halfway through a migration. A pending
+# run is replaced when a newer one queues, so an intermediate merge can end up
+# with no deploy of its own; the newer run deploys it too. The whole workflow is
+# in the group, not just the deploy job, so deploys go out in merge order.
 concurrency:
   group: deploy-api
   cancel-in-progress: false
 
 permissions:
   contents: read
-  # Lets the job request the OIDC token that Workload Identity Federation trades
-  # for short-lived GCP credentials. There is no service account key anywhere.
-  id-token: write
 
 env:
   REGION: europe-west1
-  # The commit CI checked, not whatever main points to by now.
-  SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
   RUNTIME_SA: api-runtime@${{ vars.GCP_PROJECT_ID }}.iam.gserviceaccount.com
   CLOUDSDK_CORE_PROJECT: ${{ vars.GCP_PROJECT_ID }}
 
 jobs:
+  checks:
+    uses: ./.github/workflows/checks.yml
+    permissions:
+      contents: read
+      pull-requests: write
+    secrets:
+      GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+
   deploy:
-    # branches: [main] above matches a fork PR whose branch is also called main,
-    # so also require a green push to this repository.
-    if: >-
-      github.event_name == 'workflow_dispatch' || (
-        github.event.workflow_run.conclusion == 'success' &&
-        github.event.workflow_run.event == 'push' &&
-        github.event.workflow_run.head_repository.full_name == github.repository
-      )
+    needs: checks
+    # A manual run from another branch would be refused by GCP anyway: skip it
+    # before building anything.
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # Lets the job request the OIDC token that Workload Identity Federation
+      # trades for short-lived GCP credentials. There is no service account key
+      # anywhere. Only this job gets it, not the checks.
+      id-token: write
     env:
-      IMAGE: europe-west1-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/api/api:${{ github.event.workflow_run.head_sha || github.sha }}
-    # Actions pinned by commit SHA: this is the only workflow that can get GCP
+      IMAGE: europe-west1-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/api/api:${{ github.sha }}
+    # Actions pinned by commit SHA: this is the only job that can get GCP
     # credentials (id-token: write), and a tag can be moved, a SHA cannot. To
     # update one: gh api repos/<owner>/<action>/commits/<tag> --jq .sha
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ env.SHA }}
           persist-credentials: false
 
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
