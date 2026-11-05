@@ -15,9 +15,10 @@ next-env.d.ts
 # testing
 coverage/
 
-# env — everything except the template
+# env: everything except the template and the direnv file
 .env*
 !.env.example
+!.envrc
 
 # misc
 .DS_Store
