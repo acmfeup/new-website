@@ -117,12 +117,7 @@
     @apply border-border outline-ring/50;
   }
 
-  /* For Safari's weird top scroll scroll scroll to not be white */
-  html {
-    @apply bg-primary;
-  }
-
   body {
-    @apply bg-background text-foreground;
+    @apply bg-primary text-foreground;
   }
 }
