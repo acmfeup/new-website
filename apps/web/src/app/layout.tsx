@@ -1,6 +1,6 @@
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -17,6 +17,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "ACM FEUP",
   description: "Website for the ACM FEUP student chapter",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#07162c",
 };
 
 export default function RootLayout({
