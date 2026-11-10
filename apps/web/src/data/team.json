@@ -1,0 +1,68 @@
+[
+  {
+    "id": 1,
+    "name": "Board",
+    "members": [
+      {
+        "id": 1,
+        "name": "Rafael Pinho",
+        "role": "President",
+        "photoUrl": "/team/example.jpg",
+        "githubUrl": "https://github.com/acmfeup",
+        "linkedinUrl": "https://www.linkedin.com/"
+      },
+      {
+        "id": 2,
+        "name": "Sam Placeholder",
+        "role": "Vice-President",
+        "photoUrl": null,
+        "githubUrl": null,
+        "linkedinUrl": "https://www.linkedin.com/"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Development",
+    "members": [
+      {
+        "id": 3,
+        "name": "Bebaz Teemo main",
+        "role": "Head of Development",
+        "photoUrl": null,
+        "githubUrl": "https://github.com/acmfeup",
+        "linkedinUrl": null
+      },
+      {
+        "id": 4,
+        "name": "Miguel Ribeiro",
+        "role": "Recruit",
+        "photoUrl": "/team/squidward.jpg",
+        "githubUrl": "https://github.com/migogo123",
+        "linkedinUrl": "https://www.linkedin.com/"
+      },
+      {
+        "id": 5,
+        "name": "Pou Pou",
+        "role": "Developer",
+        "photoUrl": null,
+        "githubUrl": null,
+        "linkedinUrl": null
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Events",
+    "members": [
+      {
+        "id": 6,
+        "name": "Casey Test",
+        "role": "Head of Events",
+        "photoUrl": null,
+        "githubUrl": null,
+        "linkedinUrl": "https://www.linkedin.com/"
+      }
+    ]
+  }
+]
