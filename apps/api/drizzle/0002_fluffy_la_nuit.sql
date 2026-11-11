@@ -1,1 +1,0 @@
-DROP TABLE "health_check" CASCADE;

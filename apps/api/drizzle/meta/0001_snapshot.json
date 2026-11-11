@@ -1,5 +1,5 @@
 {
-  "id": "06ff2bdf-edf0-4af6-b117-4c24c2148c7b",
+  "id": "be1e91f6-3163-432f-ba4a-8176f82b30d4",
   "prevId": "bfca00ef-06fa-4504-99d5-a5c4d8e85452",
   "version": "7",
   "dialect": "postgresql",
@@ -26,11 +26,17 @@
           "primaryKey": false,
           "notNull": true
         },
-        "date": {
-          "name": "date",
+        "starts_at": {
+          "name": "starts_at",
           "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true
+        },
+        "ends_at": {
+          "name": "ends_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
         },
         "location": {
           "name": "location",
@@ -92,33 +98,12 @@
         }
       },
       "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.health_check": {
-      "name": "health_check",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "checked_at": {
-          "name": "checked_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
+      "checkConstraints": {
+        "events_valid_date_range": {
+          "name": "events_valid_date_range",
+          "value": "\"events\".\"ends_at\" IS NULL OR \"events\".\"ends_at\" >= \"events\".\"starts_at\""
         }
       },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
       "isRLSEnabled": false
     }
   },
