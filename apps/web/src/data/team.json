@@ -8,16 +8,18 @@
         "name": "Rafael Pinho",
         "role": "President",
         "photoUrl": "/team/example.jpg",
-        "githubUrl": "https://github.com/acmfeup",
-        "linkedinUrl": "https://www.linkedin.com/"
+        "links": [
+          { "type": "github", "url": "https://github.com/acmfeup" },
+          { "type": "linkedin", "url": "https://www.linkedin.com/" },
+          { "type": "instagram", "url": "https://www.instagram.com/" }
+        ]
       },
       {
         "id": 2,
         "name": "Sam Placeholder",
         "role": "Vice-President",
         "photoUrl": null,
-        "githubUrl": null,
-        "linkedinUrl": "https://www.linkedin.com/"
+        "links": [{ "type": "linkedin", "url": "https://www.linkedin.com/" }]
       }
     ]
   },
@@ -30,24 +32,28 @@
         "name": "Bebaz Teemo main",
         "role": "Head of Development",
         "photoUrl": null,
-        "githubUrl": "https://github.com/acmfeup",
-        "linkedinUrl": null
+        "links": [{ "type": "github", "url": "https://github.com/acmfeup" }]
       },
       {
         "id": 4,
         "name": "Miguel Ribeiro",
         "role": "Recruit",
-        "photoUrl": "/team/squidward.jpg",
-        "githubUrl": "https://github.com/migogo123",
-        "linkedinUrl": "https://www.linkedin.com/"
+        "photoUrl": "/team/miguel-ribeiro.jpg",
+        "links": [
+          { "type": "github", "url": "https://github.com/migogo123" },
+          {
+            "type": "instagram",
+            "url": "https://www.instagram.com/privv_.ribeiro_/"
+          },
+          { "type": "website", "url": "https://acmfeup.eu" }
+        ]
       },
       {
         "id": 5,
         "name": "Pou Pou",
         "role": "Developer",
         "photoUrl": null,
-        "githubUrl": null,
-        "linkedinUrl": null
+        "links": []
       }
     ]
   },
@@ -60,8 +66,7 @@
         "name": "Casey Test",
         "role": "Head of Events",
         "photoUrl": null,
-        "githubUrl": null,
-        "linkedinUrl": "https://www.linkedin.com/"
+        "links": [{ "type": "linkedin", "url": "https://www.linkedin.com/" }]
       }
     ]
   }

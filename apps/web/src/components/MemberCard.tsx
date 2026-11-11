@@ -1,20 +1,32 @@
-import { Github, Linkedin } from "lucide-react";
+import {
+  Github,
+  Globe,
+  Instagram,
+  Link,
+  Linkedin,
+  type LucideIcon,
+} from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { getInitials } from "@/lib/initials";
 import type { TeamMember } from "@/lib/team";
 
+// Partial: a type the backend adds later falls back to a generic link
+// instead of breaking the page.
+const LINK_TYPES: Partial<Record<string, { label: string; icon: LucideIcon }>> =
+  {
+    github: { label: "GitHub", icon: Github },
+    linkedin: { label: "LinkedIn", icon: Linkedin },
+    instagram: { label: "Instagram", icon: Instagram },
+    website: { label: "Website", icon: Globe },
+  };
+
 interface MemberCardProps {
   member: TeamMember;
 }
 
 export default function MemberCard({ member }: MemberCardProps) {
-  const links = [
-    { href: member.githubUrl, label: "GitHub", icon: Github },
-    { href: member.linkedinUrl, label: "LinkedIn", icon: Linkedin },
-  ];
-
   return (
     <Card className="h-full border-border hover:shadow-lg transition-shadow duration-300">
       <CardContent className="flex h-full flex-col items-center gap-4 text-center">
@@ -45,21 +57,25 @@ export default function MemberCard({ member }: MemberCardProps) {
         </div>
 
         <div className="mt-auto flex gap-2">
-          {links.map(
-            ({ href, label, icon: Icon }) =>
-              href && (
-                <Button key={label} variant="ghost" size="icon" asChild>
-                  <a
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`${member.name} on ${label}`}
-                  >
-                    <Icon aria-hidden />
-                  </a>
-                </Button>
-              ),
-          )}
+          {member.links.map((link) => {
+            const { label, icon: Icon } = LINK_TYPES[link.type] ?? {
+              label: link.type,
+              icon: Link,
+            };
+
+            return (
+              <Button key={link.url} variant="ghost" size="icon" asChild>
+                <a
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${member.name} on ${label} (opens in a new tab)`}
+                >
+                  <Icon aria-hidden />
+                </a>
+              </Button>
+            );
+          })}
         </div>
       </CardContent>
     </Card>

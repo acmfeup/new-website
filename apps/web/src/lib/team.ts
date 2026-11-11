@@ -1,5 +1,11 @@
 import team from "@/data/team.json";
 
+// "github", "linkedin", "instagram", "website", or a type added later.
+export type MemberLink = {
+  type: string;
+  url: string;
+};
+
 // A missing value is null, never an omitted key.
 export type TeamMember = {
   id: number;
@@ -7,8 +13,9 @@ export type TeamMember = {
   role: string;
   // Path under apps/web/public
   photoUrl: string | null;
-  githubUrl: string | null;
-  linkedinUrl: string | null;
+  // Empty when the member has none. List order is display order.
+  // At most 3 per member, enforced by the backend later.
+  links: MemberLink[];
 };
 
 export type Department = {
