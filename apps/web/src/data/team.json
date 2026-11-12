@@ -1,0 +1,73 @@
+[
+  {
+    "id": 1,
+    "name": "Board",
+    "members": [
+      {
+        "id": 1,
+        "name": "Rafael Pinho",
+        "role": "President",
+        "photoUrl": "/team/example.jpg",
+        "links": [
+          { "type": "github", "url": "https://github.com/acmfeup" },
+          { "type": "linkedin", "url": "https://www.linkedin.com/" },
+          { "type": "instagram", "url": "https://www.instagram.com/" }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Sam Placeholder",
+        "role": "Vice-President",
+        "photoUrl": null,
+        "links": [{ "type": "linkedin", "url": "https://www.linkedin.com/" }]
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Development",
+    "members": [
+      {
+        "id": 3,
+        "name": "Bebaz Teemo main",
+        "role": "Head of Development",
+        "photoUrl": null,
+        "links": [{ "type": "github", "url": "https://github.com/acmfeup" }]
+      },
+      {
+        "id": 4,
+        "name": "Miguel Ribeiro",
+        "role": "Recruit",
+        "photoUrl": "/team/miguel-ribeiro.jpg",
+        "links": [
+          { "type": "github", "url": "https://github.com/migogo123" },
+          {
+            "type": "instagram",
+            "url": "https://www.instagram.com/privv_.ribeiro_/"
+          },
+          { "type": "website", "url": "https://acmfeup.eu" }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Pou Pou",
+        "role": "Developer",
+        "photoUrl": null,
+        "links": []
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Events",
+    "members": [
+      {
+        "id": 6,
+        "name": "Casey Test",
+        "role": "Head of Events",
+        "photoUrl": null,
+        "links": [{ "type": "linkedin", "url": "https://www.linkedin.com/" }]
+      }
+    ]
+  }
+]

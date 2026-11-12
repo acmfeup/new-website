@@ -8,5 +8,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "daily",
       priority: 1,
     },
+    { url: "https://acmfeup.eu/team" },
   ];
 }
