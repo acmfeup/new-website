@@ -86,10 +86,16 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       <section className="relative bg-gradient-to-br from-primary via-primary/90 to-primary/80 text-primary-foreground">
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20"
-          style={{ backgroundImage: "url(porto.png)" }}
-        />
+        <div className="absolute inset-0 opacity-20">
+          <Image
+            src="/porto.webp"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+        </div>
         <div className="absolute inset-0 bg-gradient-to-br from-primary/80 via-primary/70 to-primary/60" />
 
         <div className="relative container mx-auto px-4 py-24 md:py-32 text-center">
