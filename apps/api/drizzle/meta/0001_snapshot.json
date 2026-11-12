@@ -1,5 +1,5 @@
 {
-  "id": "be1e91f6-3163-432f-ba4a-8176f82b30d4",
+  "id": "9bf80a3e-2275-4f89-bebc-5a2afad567be",
   "prevId": "bfca00ef-06fa-4504-99d5-a5c4d8e85452",
   "version": "7",
   "dialect": "postgresql",
@@ -104,6 +104,32 @@
           "value": "\"events\".\"ends_at\" IS NULL OR \"events\".\"ends_at\" >= \"events\".\"starts_at\""
         }
       },
+      "isRLSEnabled": false
+    },
+    "public.health_check": {
+      "name": "health_check",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "checked_at": {
+          "name": "checked_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
       "isRLSEnabled": false
     }
   },

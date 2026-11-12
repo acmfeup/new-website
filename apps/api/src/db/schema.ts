@@ -8,6 +8,14 @@ import {
   timestamp,
 } from "drizzle-orm/pg-core";
 
+// Minimal example table, kept as a reference for the team.
+export const healthCheck = pgTable("health_check", {
+  id: serial("id").primaryKey(),
+  checkedAt: timestamp("checked_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
 // These ordered lists belong to one event, with no shared identity or separate
 // lifecycle yet. Keep them in the row until cross-event queries need relations.
 export const events = pgTable(

@@ -14,5 +14,3 @@ CREATE TABLE "events" (
 	CONSTRAINT "events_slug_unique" UNIQUE("slug"),
 	CONSTRAINT "events_valid_date_range" CHECK ("events"."ends_at" IS NULL OR "events"."ends_at" >= "events"."starts_at")
 );
---> statement-breakpoint
-DROP TABLE "health_check" CASCADE;
