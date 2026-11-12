@@ -1,0 +1,33 @@
+{
+  "user": {
+    "name": "Rodrigo Dias",
+    "department": "Development",
+    "role": "editor"
+  },
+  "events": [
+    {
+      "title": "Workshop web dev",
+      "date": "2026-11-18",
+      "time": "18:00",
+      "location": "J301"
+    },
+    {
+      "title": "Code bounty",
+      "date": "2026-11-25",
+      "time": "17:30",
+      "location": "B021"
+    },
+    {
+      "title": "ACM Egg Drop",
+      "date": "2026-12-11",
+      "time": "19:00",
+      "location": "J301"
+    }
+  ],
+  "resources": [
+    { "label": "Notion", "href": "https://www.notion.so/" },
+    { "label": "Google Drive", "href": "https://drive.google.com/" },
+    { "label": "Gmail", "href": "https://mail.google.com/" },
+    { "label": "Instagram", "href": "https://www.instagram.com/acmfeup/" }
+  ]
+}
