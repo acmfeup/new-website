@@ -1,0 +1,51 @@
+[
+  {
+    "id": 1,
+    "slug": "example-intro-to-web-development",
+    "title": "Example event: Introduction to Web Development",
+    "startsAt": "2025-04-10T18:00:00+01:00",
+    "endsAt": "2025-04-10T20:00:00+01:00",
+    "location": "FEUP, Porto",
+    "description": "Demonstration record for the events page.",
+    "coverImage": "/porto.png",
+    "speakers": ["Example speaker"],
+    "organisers": ["ACM FEUP"],
+    "links": [
+      {
+        "label": "Example resource!",
+        "url": "https://example.com/"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "slug": "example-community-meetup",
+    "title": "Example event: Community Meetup",
+    "startsAt": "2025-10-23T18:30:00+01:00",
+    "endsAt": null,
+    "location": "FEUP, Porto",
+    "description": "Demonstration record with a required cover image and no extra links.",
+    "coverImage": "/acm_logo.png",
+    "speakers": [],
+    "organisers": ["ACM FEUP"],
+    "links": []
+  },
+  {
+    "id": 3,
+    "slug": "example-photo-album",
+    "title": "Example event: Photo Album",
+    "startsAt": "2025-07-17T18:00:00+01:00",
+    "endsAt": "2025-07-17T19:30:00+01:00",
+    "location": "FEUP, Porto",
+    "description": "Demonstration record with a cover image and an external photo album link.",
+    "coverImage": "/meta.jpg",
+    "speakers": [],
+    "organisers": ["ACM FEUP"],
+    "links": [
+      {
+        "label": "Photo album!",
+        "url": "https://drive.google.com/drive/folders/example"
+      }
+    ]
+  }
+]
