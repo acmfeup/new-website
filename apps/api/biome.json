@@ -6,6 +6,11 @@
     "ignoreUnknown": true,
     "includes": ["**", "!**/node_modules", "!**/dist", "!drizzle"]
   },
+  "javascript": {
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
+    }
+  },
   "linter": {
     "rules": {
       "style": {
