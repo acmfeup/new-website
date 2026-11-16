@@ -15,6 +15,13 @@
       "when": 1794504485929,
       "tag": "0001_ordinary_big_bertha",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794848475746,
+      "tag": "0002_daffy_catseye",
+      "breakpoints": true
     }
   ]
 }
