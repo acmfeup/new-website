@@ -48,7 +48,7 @@ export const events = pgTable(
 
 export const departments = pgTable("departments", {
   id: serial("id").primaryKey(),
-  name: text("name").notNull(),
+  name: text("name").notNull().unique(),
   sortOrder: integer("sort_order").notNull(),
 });
 
