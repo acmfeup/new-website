@@ -19,15 +19,8 @@
     {
       "idx": 2,
       "version": "7",
-      "when": 1794848475746,
-      "tag": "0002_daffy_catseye",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1795014364069,
-      "tag": "0003_clumsy_felicia_hardy",
+      "when": 1795027513604,
+      "tag": "0002_thick_stranger",
       "breakpoints": true
     }
   ]

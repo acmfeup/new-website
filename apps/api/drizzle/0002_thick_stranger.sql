@@ -1,7 +1,8 @@
 CREATE TABLE "departments" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
-	"sort_order" integer NOT NULL
+	"sort_order" integer NOT NULL,
+	CONSTRAINT "departments_name_unique" UNIQUE("name")
 );
 --> statement-breakpoint
 CREATE TABLE "team_members" (
