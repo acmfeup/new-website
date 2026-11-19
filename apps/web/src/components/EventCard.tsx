@@ -1,5 +1,6 @@
 import Link from "next/link";
 import EventCover from "@/components/EventCover";
+import EventExternalLink from "@/components/EventExternalLink";
 import { Card, CardContent } from "@/components/ui/card";
 import type { Event } from "@/lib/events";
 
@@ -9,7 +10,7 @@ interface EventCardProps {
 
 export default function EventCard({ event }: EventCardProps) {
   return (
-    <Card className="h-full gap-0 overflow-hidden border-border py-0">
+    <Card className="relative h-full gap-0 overflow-hidden border-border py-0">
       <EventCover
         src={event.coverImage}
         alt={event.title}
@@ -22,7 +23,7 @@ export default function EventCard({ event }: EventCardProps) {
           <h2 className="text-xl font-semibold text-card-foreground wrap-break-word">
             <Link
               href={`/events/${event.slug}`}
-              className="rounded-sm hover:text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+              className="rounded-sm after:absolute after:inset-0 hover:text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
               {event.title}
             </Link>
@@ -41,18 +42,13 @@ export default function EventCard({ event }: EventCardProps) {
         </div>
 
         {event.links.length > 0 && (
-          <ul className="mt-auto flex flex-wrap gap-x-4 gap-y-2 border-t border-border pt-4">
+          <ul className="relative z-10 mt-auto flex flex-wrap gap-x-4 gap-y-2 border-t border-border pt-4">
             {event.links.map((link) => (
               <li key={link.url}>
-                <a
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`${link.label} (opens in a new tab)`}
+                <EventExternalLink
+                  link={link}
                   className="text-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-                >
-                  {link.label}
-                </a>
+                />
               </li>
             ))}
           </ul>

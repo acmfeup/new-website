@@ -7,11 +7,12 @@
     "endsAt": "2025-04-10T20:00:00+01:00",
     "location": "FEUP, Porto",
     "description": "Demonstration record for the events page.",
-    "coverImage": "/porto.png",
+    "coverImage": "/porto.webp",
     "speakers": ["Example speaker"],
     "organisers": ["ACM FEUP"],
     "links": [
       {
+        "type": "website",
         "label": "Example resource!",
         "url": "https://example.com/"
       }
@@ -43,6 +44,7 @@
     "organisers": ["ACM FEUP"],
     "links": [
       {
+        "type": "drive",
         "label": "Photo album!",
         "url": "https://drive.google.com/drive/folders/example"
       }

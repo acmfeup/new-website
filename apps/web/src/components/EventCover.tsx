@@ -6,7 +6,6 @@ interface EventCoverProps {
   alt: string;
   sizes: string;
   className?: string;
-  priority?: boolean;
 }
 
 export default function EventCover({
@@ -14,7 +13,6 @@ export default function EventCover({
   alt,
   sizes,
   className,
-  priority = false,
 }: EventCoverProps) {
   return (
     <div className={cn("relative overflow-hidden bg-card", className)}>
@@ -33,7 +31,6 @@ export default function EventCover({
         fill
         sizes={sizes}
         className="object-contain"
-        priority={priority}
       />
     </div>
   );

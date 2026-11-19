@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import EventExternalLink from "@/components/EventExternalLink";
 import { getEvent, getPastEvents } from "@/lib/events";
 
 type EventPageProps = {
@@ -37,14 +38,19 @@ export default async function EventPage({ params }: EventPageProps) {
 
   return (
     <main className="min-h-screen bg-background text-foreground">
-      <article className="container mx-auto max-w-5xl px-4 py-10 md:py-16">
+      <nav
+        className="container mx-auto max-w-5xl px-4 pt-10 md:pt-16"
+        aria-label="Event navigation"
+      >
+        <Link
+          href="/events"
+          className="inline-block rounded-sm text-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+        >
+          Back to events
+        </Link>
+      </nav>
+      <article className="container mx-auto max-w-5xl px-4 pb-10 md:pb-16">
         <header className="mx-auto max-w-4xl">
-          <Link
-            href="/events"
-            className="inline-block rounded-sm text-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-          >
-            Back to events
-          </Link>
           <h1 className="mt-8 text-center text-4xl font-bold text-balance wrap-break-word md:text-5xl">
             {event.title}
           </h1>
@@ -114,15 +120,10 @@ export default async function EventPage({ params }: EventPageProps) {
               <ul className="list-disc space-y-2 pl-5">
                 {event.links.map((link) => (
                   <li key={link.url}>
-                    <a
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`${link.label} (opens in a new tab)`}
+                    <EventExternalLink
+                      link={link}
                       className="rounded-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-                    >
-                      {link.label}
-                    </a>
+                    />
                   </li>
                 ))}
               </ul>

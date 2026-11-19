@@ -1,5 +1,11 @@
 import events from "@/data/events.json";
 
+export type EventLink = {
+  type: string;
+  label: string;
+  url: string;
+};
+
 export type Event = {
   id: number;
   slug: string;
@@ -11,7 +17,7 @@ export type Event = {
   coverImage: string;
   speakers: string[];
   organisers: string[];
-  links: { label: string; url: string }[];
+  links: EventLink[];
 };
 
 export async function getEvents(): Promise<Event[]> {
