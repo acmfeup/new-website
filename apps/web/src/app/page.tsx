@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Blocks,
   Bot,
@@ -13,10 +11,8 @@ import {
   Wrench,
 } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
-import Countdown from "@/components/Countdown";
 import DepartmentCard from "@/components/DepartmentCard";
-import { Button } from "@/components/ui/button";
+import RecruitmentSection from "@/components/RecruitmentSection";
 
 interface Department {
   name: string;
@@ -80,8 +76,6 @@ const recruitmentDeadline = new Date("2026-10-09T23:59:00+01:00");
 
 export default function Home() {
   //flipped on the client, so after the deadline the prerendered "Join Us" shows until hydration
-  const [deadlinePassed, setDeadlinePassed] = useState(false);
-  const applicationsOpen = isRecruiting && !deadlinePassed;
 
   return (
     <div className="min-h-screen bg-background">
@@ -128,48 +122,10 @@ export default function Home() {
               the future of tech.
             </p>
 
-            <div className="pt-8">
-              {applicationsOpen && (
-                <div className="mb-8">
-                  <Countdown
-                    target={recruitmentDeadline}
-                    onEnd={() => setDeadlinePassed(true)}
-                  />
-                </div>
-              )}
-              <Button
-                size={"lg"}
-                className="bg-background hover:bg-secondary/90 text-secondary-foreground text-lg px-8 py-4 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-                asChild
-              >
-                {applicationsOpen ? (
-                  <a
-                    href="https://forms.gle/FXjf82jfQjgCom789"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Join Us
-                  </a>
-                ) : (
-                  <p>Recruitment Closed - Stay Tuned!</p>
-                )}
-              </Button>
-
-              {!applicationsOpen && (
-                <p className="text-white/80 text-sm mt-4 max-w-md mx-auto">
-                  Follow us on{" "}
-                  <a
-                    href="https://www.instagram.com/acmfeup/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline hover:text-white transition-colors"
-                  >
-                    Instagram
-                  </a>{" "}
-                  for recruitment announcements and updates
-                </p>
-              )}
-            </div>
+            <RecruitmentSection
+              isRecruiting={isRecruiting}
+              recruitmentDeadline={recruitmentDeadline}
+            />
           </div>
         </div>
       </section>
