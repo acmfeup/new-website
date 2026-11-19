@@ -3,7 +3,6 @@ import {
   Github,
   Globe,
   Instagram,
-  Link,
   Linkedin,
   type LucideIcon,
   Youtube,
@@ -14,7 +13,6 @@ import { cn } from "@/lib/utils";
 const LINK_ICONS: Partial<Record<string, LucideIcon>> = {
   instagram: Instagram,
   drive: FolderOpen,
-  website: Globe,
   youtube: Youtube,
   github: Github,
   linkedin: Linkedin,
@@ -29,7 +27,7 @@ export default function EventExternalLink({
   link,
   className,
 }: EventExternalLinkProps) {
-  const Icon = LINK_ICONS[link.type] ?? Link;
+  const Icon = LINK_ICONS[link.type] ?? Globe;
 
   return (
     <a
