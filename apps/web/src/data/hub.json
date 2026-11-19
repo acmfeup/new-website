@@ -1,0 +1,31 @@
+{
+  "user": {
+    "id": 1,
+    "name": "Rodrigo Dias",
+    "department": "Development",
+    "role": "editor"
+  },
+  "events": [
+    {
+      "id": 1,
+      "title": "Workshop web dev",
+      "date": "2026-11-18",
+      "time": "18:00",
+      "location": "J301"
+    },
+    {
+      "id": 2,
+      "title": "Code bounty",
+      "date": "2026-11-25",
+      "time": "17:30",
+      "location": "B021"
+    },
+    {
+      "id": 3,
+      "title": "ACM Egg Drop",
+      "date": "2026-12-11",
+      "time": "19:00",
+      "location": "J301"
+    }
+  ]
+}
