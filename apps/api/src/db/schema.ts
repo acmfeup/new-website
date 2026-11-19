@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
 import {
   check,
+  integer,
   jsonb,
   pgTable,
   serial,
@@ -44,3 +45,24 @@ export const events = pgTable(
     ),
   ],
 );
+
+export const departments = pgTable("departments", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull().unique(),
+  sortOrder: integer("sort_order").notNull(),
+});
+
+export const teamMembers = pgTable("team_members", {
+  id: serial("id").primaryKey(),
+  departmentId: integer("department_id")
+    .notNull()
+    .references(() => departments.id),
+  name: text("name").notNull(),
+  role: text("role").notNull(),
+  photoUrl: text("photo_url"),
+  sortOrder: integer("sort_order").notNull(),
+  links: jsonb("links")
+    .$type<{ type: string; url: string }[]>()
+    .default(sql`'[]'::jsonb`)
+    .notNull(),
+});
