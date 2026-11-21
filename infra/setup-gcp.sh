@@ -15,6 +15,7 @@ export CLOUDSDK_CORE_PROJECT="$PROJECT_ID"
 REGION=europe-west1
 REPO=api            # Artifact Registry repository
 SERVICE=api         # Cloud Run service
+API_DOMAIN=api.acmfeup.eu
 SECRET=database-url # Secret Manager secret with the Neon connection string
 GITHUB_REPO=acmfeup/new-website
 POOL=github
@@ -174,7 +175,17 @@ EOF
   fi
 fi
 
-url="$(gcloud run services describe "$SERVICE" --region="$REGION" --format='value(status.url)')"
+step "Domain '$API_DOMAIN'"
+# The API has to be on the same site as www.acmfeup.eu: cookies it sets from a
+# run.app address are third-party there, and Safari blocks them. Creating the
+# mapping needs an account that has verified acmfeup.eu in Search Console
+# (gcloud domains verify acmfeup.eu); gcloud says so if yours has not.
+if ! exists gcloud beta run domain-mappings describe --domain="$API_DOMAIN" --region="$REGION"; then
+  gcloud beta run domain-mappings create --service="$SERVICE" --domain="$API_DOMAIN" \
+    --region="$REGION" >/dev/null
+fi
+dns="$(gcloud beta run domain-mappings describe --domain="$API_DOMAIN" --region="$REGION" \
+  --format='value(status.resourceRecords[0].type,status.resourceRecords[0].rrdata)')"
 
 cat <<EOF
 
@@ -185,7 +196,12 @@ Actions > Variables), not secrets:
   GCP_WIF_PROVIDER  = projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/$POOL/providers/$PROVIDER
   GCP_DEPLOYER_SA   = $DEPLOYER_SA
 
+DNS record for $API_DOMAIN in Cloudflare, set to "DNS only" (grey cloud) so
+that Google can issue the certificate:
+
+  ${API_DOMAIN%%.*}  $dns
+
 API URL, for NEXT_PUBLIC_API_URL on Vercel:
 
-  $url
+  https://$API_DOMAIN
 EOF
