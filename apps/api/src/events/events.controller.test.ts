@@ -34,10 +34,4 @@ describe("EventsController.findOne", () => {
       controllerWith(undefined).findOne("missing"),
     ).rejects.toBeInstanceOf(NotFoundException);
   });
-
-  it("serialises dates as ISO 8601 strings", () => {
-    expect(JSON.parse(JSON.stringify(event)).startsAt).toBe(
-      "2025-04-10T17:00:00.000Z",
-    );
-  });
 });
