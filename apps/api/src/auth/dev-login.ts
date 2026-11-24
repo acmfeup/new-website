@@ -22,7 +22,10 @@ async function devLogin(name: string) {
   const [user] = await db
     .insert(users)
     .values({ id: crypto.randomUUID(), ...persona, emailVerified: true })
-    .onConflictDoUpdate({ target: users.email, set: { name: persona.name } })
+    .onConflictDoUpdate({
+      target: users.email,
+      set: { name: persona.name, role: persona.role },
+    })
     .returning();
 
   // A second instance with the test plugin, kept out of the API's own `auth`.
@@ -33,7 +36,7 @@ async function devLogin(name: string) {
   }).$context;
   const [cookie] = (await test.login({ userId: user.id })).cookies;
 
-  console.log(`Logged in as ${persona.email}. Paste this in the browser console on http://localhost:3000:
+  console.log(`Logged in as ${persona.email} (${persona.role}). Paste this in the browser console on http://localhost:3000:
 
 document.cookie = "${cookie.name}=${cookie.value}; path=/"
 `);

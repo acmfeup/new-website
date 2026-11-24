@@ -9,6 +9,7 @@ import {
 } from "../config/env";
 import { db } from "../db/client";
 import * as schema from "../db/schema";
+import { userRoles } from "../db/schema";
 
 // Shared with the dev-login script, which adds its test-only plugin on top.
 export const authOptions = {
@@ -17,6 +18,16 @@ export const authOptions = {
   database: drizzleAdapter(db, { provider: "pg", schema, usePlural: true }),
 
   trustedOrigins: parseCorsOrigins(process.env.CORS_ORIGIN),
+  user: {
+    additionalFields: {
+      // input: false, so no request can set or change its own role.
+      role: {
+        type: [...userRoles],
+        defaultValue: "member",
+        input: false,
+      },
+    },
+  },
   socialProviders: {
     google: {
       clientId: GOOGLE_CLIENT_ID,

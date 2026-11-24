@@ -61,6 +61,9 @@ export const teamMembers = pgTable("team_members", {
     .references(() => departments.id),
   name: text("name").notNull(),
   role: text("role").notNull(),
+  // The site account of this member, if they have one. Not unique: someone in
+  // two departments has a row in each.
+  userId: text("user_id").references(() => users.id, { onDelete: "set null" }),
   photoUrl: text("photo_url"),
   sortOrder: integer("sort_order").notNull(),
   links: jsonb("links")
@@ -83,14 +86,29 @@ const authTimestamps = {
     .notNull(),
 };
 
-export const users = pgTable("users", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
-  email: text("email").notNull().unique(),
-  emailVerified: boolean("email_verified").default(false).notNull(),
-  image: text("image"),
-  ...authTimestamps,
-});
+// What a user may do on the site. auth.ts exposes it on the session; only the
+// database sets it, never the user.
+export const userRoles = ["member", "editor", "admin"] as const;
+export type UserRole = (typeof userRoles)[number];
+
+export const users = pgTable(
+  "users",
+  {
+    id: text("id").primaryKey(),
+    name: text("name").notNull(),
+    email: text("email").notNull().unique(),
+    emailVerified: boolean("email_verified").default(false).notNull(),
+    image: text("image"),
+    role: text("role", { enum: userRoles }).default("member").notNull(),
+    ...authTimestamps,
+  },
+  (table) => [
+    check(
+      "users_valid_role",
+      sql`${table.role} IN (${sql.raw(userRoles.map((role) => `'${role}'`).join(", "))})`,
+    ),
+  ],
+);
 
 export const sessions = pgTable(
   "sessions",

@@ -32,9 +32,11 @@ CREATE TABLE "users" (
 	"email" text NOT NULL,
 	"email_verified" boolean DEFAULT false NOT NULL,
 	"image" text,
+	"role" text DEFAULT 'member' NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
-	CONSTRAINT "users_email_unique" UNIQUE("email")
+	CONSTRAINT "users_email_unique" UNIQUE("email"),
+	CONSTRAINT "users_valid_role" CHECK ("users"."role" IN ('member', 'editor', 'admin'))
 );
 --> statement-breakpoint
 CREATE TABLE "verifications" (
@@ -46,8 +48,10 @@ CREATE TABLE "verifications" (
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+ALTER TABLE "team_members" ADD COLUMN "user_id" text;--> statement-breakpoint
 ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "sessions" ADD CONSTRAINT "sessions_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "accounts_user_id_idx" ON "accounts" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "sessions_user_id_idx" ON "sessions" USING btree ("user_id");--> statement-breakpoint
-CREATE INDEX "verifications_identifier_idx" ON "verifications" USING btree ("identifier");
+CREATE INDEX "verifications_identifier_idx" ON "verifications" USING btree ("identifier");--> statement-breakpoint
+ALTER TABLE "team_members" ADD CONSTRAINT "team_members_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;

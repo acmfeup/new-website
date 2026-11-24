@@ -1,5 +1,5 @@
 {
-  "id": "7d0f3dd5-03dd-49f5-b50d-a6ba5e91c33a",
+  "id": "905b6743-630e-4cc7-b3d3-d1232043cb12",
   "prevId": "9fa1ef9b-a39e-48d9-a123-3019d1d1a4e2",
   "version": "7",
   "dialect": "postgresql",
@@ -423,6 +423,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "photo_url": {
           "name": "photo_url",
           "type": "text",
@@ -456,6 +462,19 @@
             "id"
           ],
           "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "team_members_user_id_users_id_fk": {
+          "name": "team_members_user_id_users_id_fk",
+          "tableFrom": "team_members",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
           "onUpdate": "no action"
         }
       },
@@ -500,6 +519,13 @@
           "primaryKey": false,
           "notNull": false
         },
+        "role": {
+          "name": "role",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'member'"
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp with time zone",
@@ -528,7 +554,12 @@
         }
       },
       "policies": {},
-      "checkConstraints": {},
+      "checkConstraints": {
+        "users_valid_role": {
+          "name": "users_valid_role",
+          "value": "\"users\".\"role\" IN ('member', 'editor', 'admin')"
+        }
+      },
       "isRLSEnabled": false
     },
     "public.verifications": {
