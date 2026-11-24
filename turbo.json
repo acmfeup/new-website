@@ -20,7 +20,11 @@
         "DATABASE_URL",
         "API_PORT",
         "CORS_ORIGIN",
-        "NEXT_PUBLIC_API_URL"
+        "NEXT_PUBLIC_API_URL",
+        "BETTER_AUTH_URL",
+        "BETTER_AUTH_SECRET",
+        "GOOGLE_CLIENT_ID",
+        "GOOGLE_CLIENT_SECRET"
       ]
     }
   }
