@@ -1,4 +1,4 @@
-import { betterAuth } from "better-auth";
+import { type BetterAuthOptions, betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { parseCorsOrigins } from "../config/cors";
 import {
@@ -10,7 +10,8 @@ import {
 import { db } from "../db/client";
 import * as schema from "../db/schema";
 
-export const auth = betterAuth({
+// Shared with the dev-login script, which adds its test-only plugin on top.
+export const authOptions = {
   baseURL: BETTER_AUTH_URL,
   secret: BETTER_AUTH_SECRET,
   database: drizzleAdapter(db, { provider: "pg", schema, usePlural: true }),
@@ -27,4 +28,6 @@ export const auth = betterAuth({
       disableSignUp: true,
     },
   },
-});
+} satisfies BetterAuthOptions;
+
+export const auth = betterAuth(authOptions);

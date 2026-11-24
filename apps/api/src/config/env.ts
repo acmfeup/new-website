@@ -14,6 +14,13 @@ export const DATABASE_URL =
   process.env.DATABASE_URL ||
   "postgresql://acmfeup:acmfeup@localhost:5432/acmfeup";
 
+// True only for a database on this machine, such as docker-compose's. Scripts
+// that write test data directly check this first.
+export function isLocalDatabase(url: string): boolean {
+  const { hostname } = new URL(url);
+  return ["localhost", "127.0.0.1", "[::1]"].includes(hostname);
+}
+
 export const API_PORT = Number(process.env.API_PORT || 4000);
 
 // Public URL of this API. Google redirects back to <this>/api/auth/callback/google.
