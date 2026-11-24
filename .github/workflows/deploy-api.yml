@@ -99,8 +99,8 @@ jobs:
             --no-traffic --tag=candidate \
             --port=4000 \
             --service-account="$RUNTIME_SA" \
-            --set-secrets=DATABASE_URL=database-url:latest \
-            --set-env-vars="^;^CORS_ORIGIN=https://acmfeup.eu,https://www.acmfeup.eu" \
+            --set-secrets=DATABASE_URL=database-url:latest,BETTER_AUTH_SECRET=better-auth-secret:latest,GOOGLE_CLIENT_ID=google-client-id:latest,GOOGLE_CLIENT_SECRET=google-client-secret:latest \
+            --set-env-vars="^;^CORS_ORIGIN=https://acmfeup.eu,https://www.acmfeup.eu;BETTER_AUTH_URL=https://api.acmfeup.eu" \
             --min-instances=0 --max-instances=2 \
             --cpu=1 --memory=512Mi \
             --quiet
