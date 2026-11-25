@@ -7,13 +7,13 @@ import { Button } from "@/components/ui/button";
 export default function RecruitmentSection({
   isRecruiting,
   recruitmentDeadline,
+  initialDeadlinePassed,
 }: {
   isRecruiting: boolean;
   recruitmentDeadline: Date;
+  initialDeadlinePassed: boolean;
 }) {
-  const [deadlinePassed, setDeadlinePassed] = useState(
-    new Date() > recruitmentDeadline,
-  );
+  const [deadlinePassed, setDeadlinePassed] = useState(initialDeadlinePassed);
   const applicationsOpen = isRecruiting && !deadlinePassed;
 
   return (

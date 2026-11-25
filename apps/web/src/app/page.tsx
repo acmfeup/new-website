@@ -13,6 +13,7 @@ import {
 import Image from "next/image";
 import DepartmentCard from "@/components/DepartmentCard";
 import RecruitmentSection from "@/components/RecruitmentSection";
+export const revalidate = 60;
 
 interface Department {
   name: string;
@@ -75,8 +76,6 @@ const isRecruiting = true;
 const recruitmentDeadline = new Date("2026-10-09T23:59:00+01:00");
 
 export default function Home() {
-  //flipped on the client, so after the deadline the prerendered "Join Us" shows until hydration
-
   return (
     <div className="min-h-screen bg-background">
       <section className="relative bg-gradient-to-br from-primary via-primary/90 to-primary/80 text-primary-foreground">
@@ -125,6 +124,7 @@ export default function Home() {
             <RecruitmentSection
               isRecruiting={isRecruiting}
               recruitmentDeadline={recruitmentDeadline}
+              initialDeadlinePassed={new Date() > recruitmentDeadline}
             />
           </div>
         </div>
