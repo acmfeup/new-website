@@ -101,7 +101,7 @@ export default async function HubPage() {
                 >
                   <Image
                     src={logo}
-                    alt={label + "'s logo"}
+                    alt=""
                     width={40}
                     height={40}
                     className="size-10 object-contain"

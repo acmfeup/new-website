@@ -2,7 +2,7 @@
 
 /* AI WARNING: made with the help of AI! */
 
-import { type CSSProperties, useState } from "react";
+import { type CSSProperties, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import styles from "./mascot.module.css";
 
@@ -51,6 +51,11 @@ export function HubMascot({
   timeTakenToArrive: number;
   collapsed: boolean;
 }) {
+  useEffect(() => {
+    const img = new Image();
+    img.src = "/hub/mascot-sprites.webp";
+  }, []);
+
   if (!phase) return null;
 
   const left =

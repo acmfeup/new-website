@@ -4,7 +4,7 @@
   display: block;
   width: 112px;
   height: 112px;
-  background: url("/hub/mascot-sprites.png") 0 0 / 600% 400% no-repeat;
+  background: url("/hub/mascot-sprites.webp") 0 0 / 600% 400% no-repeat;
   animation: frames 600ms steps(6) infinite;
 }
 .push {

@@ -9,13 +9,20 @@ export interface HubUser {
   role: HubRole;
 }
 
-// TODO: replace w/ real thing
+export interface HubEvent {
+  id: number;
+  title: string;
+  date: string;
+  time: string;
+  location: string;
+}
+
+// When the API is ready, only this body changes.
 export async function getCurrentUser(): Promise<HubUser> {
-  const role = data.user.role;
-  // Is this BAD CODE??
   return { ...data.user, role: data.user.role as HubRole };
 }
 
-export async function getUpcomingEvents() {
+// When the API is ready, only this body changes.
+export async function getUpcomingEvents(): Promise<HubEvent[]> {
   return data.events;
 }
