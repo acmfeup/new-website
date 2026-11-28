@@ -1,6 +1,6 @@
 import team from "@/data/team.json";
 
-// "github", "linkedin", "instagram", "website", or a type added later.
+// "github", "linkedin", "instagram", "website", "link", or a type added later.
 export type MemberLink = {
   type: string;
   url: string;
