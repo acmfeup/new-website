@@ -4,8 +4,8 @@
 #   bash infra/setup-gcp.sh <PROJECT_ID>
 #
 # Safe to run again: existing resources are left as they are, and IAM bindings
-# are additive. It asks for the Neon connection string without echoing it; press
-# Enter to keep the one already stored. The .github/workflows/deploy-api.yml
+# are additive. It asks for the Neon connection string and the Google OAuth
+# client without echoing them; press Enter to keep the ones already stored. The .github/workflows/deploy-api.yml
 # workflow relies on every name below.
 set -euo pipefail
 
@@ -89,6 +89,43 @@ while true; do
 done
 unset url
 
+# Better Auth. The session secret is generated here once and never shown; a new
+# version signs everyone out. The Google OAuth client is created by hand in the
+# console (APIs & Services > Credentials > OAuth client ID, type "Web
+# application", redirect URI https://$API_DOMAIN/api/auth/callback/google).
+AUTH_SECRETS=(better-auth-secret google-client-id google-client-secret)
+for name in "${AUTH_SECRETS[@]}"; do
+  step "Secret '$name'"
+  if ! exists gcloud secrets describe "$name"; then
+    gcloud secrets create "$name" --replication-policy=user-managed --locations="$REGION"
+  fi
+  has_version="$(gcloud secrets versions list "$name" --filter='state:ENABLED' --limit=1 --format='value(name)')"
+  if [ "$name" = better-auth-secret ]; then
+    if [ -z "$has_version" ]; then
+      openssl rand -base64 32 | tr -d '\n' | gcloud secrets versions add "$name" --data-file=- >/dev/null
+      echo "Generated and stored a new secret."
+    else
+      echo "Keeping the current version."
+    fi
+    continue
+  fi
+  while true; do
+    prompt="Google OAuth $name"
+    [ -n "$has_version" ] && prompt="$prompt (Enter keeps the current one)"
+    read -rsp "$prompt: " value
+    echo
+    if [ -z "$value" ] && [ -n "$has_version" ]; then
+      echo "Keeping the current version."
+      break
+    fi
+    [ -z "$value" ] && { echo "Required the first time. Try again."; continue; }
+    printf '%s' "$value" | gcloud secrets versions add "$name" --data-file=- >/dev/null
+    echo "Stored a new version."
+    break
+  done
+done
+unset value
+
 step "Service accounts"
 if ! exists gcloud iam service-accounts describe "$RUNTIME_SA"; then
   gcloud iam service-accounts create api-runtime --display-name="API (Cloud Run runtime)"
@@ -98,13 +135,15 @@ if ! exists gcloud iam service-accounts describe "$DEPLOYER_SA"; then
 fi
 
 step "Permissions"
-# Runtime: read this one secret, nothing else.
-retry gcloud secrets add-iam-policy-binding "$SECRET" --member="serviceAccount:$RUNTIME_SA" \
-  --role=roles/secretmanager.secretAccessor >/dev/null
+# Runtime: read these secrets, nothing else.
+for name in "$SECRET" "${AUTH_SECRETS[@]}"; do
+  retry gcloud secrets add-iam-policy-binding "$name" --member="serviceAccount:$RUNTIME_SA" \
+    --role=roles/secretmanager.secretAccessor >/dev/null
+done
 # Deployer: push images to this repository, deploy the service and the
 # migration job, and run them as the runtime account. It has no direct access to
-# the secret, but code it deploys runs with it: whoever controls what this
-# account deploys (the deploy workflow on main) can reach the connection string.
+# the secrets, but code it deploys runs with them: whoever controls what this
+# account deploys (the deploy workflow on main) can reach them.
 retry gcloud artifacts repositories add-iam-policy-binding "$REPO" --location="$REGION" \
   --member="serviceAccount:$DEPLOYER_SA" --role=roles/artifactregistry.writer >/dev/null
 retry gcloud projects add-iam-policy-binding "$PROJECT_ID" --member="serviceAccount:$DEPLOYER_SA" \

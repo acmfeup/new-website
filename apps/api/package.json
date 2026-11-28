@@ -12,6 +12,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "db:seed": "nest build && node dist/db/seed.js",
+    "auth:dev-login": "nest build && node dist/auth/dev-login.js",
     "db:reset": "docker compose -f ../../docker-compose.yml down -v && docker compose -f ../../docker-compose.yml up -d --wait && pnpm db:migrate",
     "test": "vitest run"
   },
@@ -19,6 +20,7 @@
     "@nestjs/common": "12.0.3",
     "@nestjs/core": "12.0.3",
     "@nestjs/platform-express": "12.0.3",
+    "better-auth": "1.7.27",
     "drizzle-orm": "^0.45.2",
     "pg": "^8.23.0",
     "reflect-metadata": "^0.2.2",
