@@ -1,7 +1,8 @@
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
+import { parseCorsOrigins } from "./cors";
 
-//  node's own env-file loader, so no dotenv dependency. Every script
+// Node's own env-file loader, so no dotenv dependency. Every script
 // in this package runs with cwd at apps/api, so the root .env is two up.
 const envFile = resolve(process.cwd(), "../../.env");
 if (existsSync(envFile)) {
@@ -22,6 +23,9 @@ export function isLocalDatabase(url: string): boolean {
 }
 
 export const API_PORT = Number(process.env.API_PORT || 4000);
+
+// Browser origins allowed to call the API; also Better Auth's trusted origins.
+export const CORS_ORIGINS = parseCorsOrigins(process.env.CORS_ORIGIN);
 
 // Public URL of this API. Google redirects back to <this>/api/auth/callback/google.
 export const BETTER_AUTH_URL =

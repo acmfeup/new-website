@@ -4,8 +4,7 @@ import { NestFactory } from "@nestjs/core";
 import { toNodeHandler } from "better-auth/node";
 import { AppModule } from "./app.module";
 import { auth } from "./auth/auth";
-import { parseCorsOrigins } from "./config/cors";
-import { API_PORT } from "./config/env";
+import { API_PORT, CORS_ORIGINS } from "./config/env";
 
 async function bootstrap() {
   // Better Auth checks its config (e.g. a missing secret in production) lazily,
@@ -16,7 +15,7 @@ async function bootstrap() {
   // credentials: the browser only sends the session cookie to another origin
   // when CORS allows it.
   app.enableCors({
-    origin: parseCorsOrigins(process.env.CORS_ORIGIN),
+    origin: CORS_ORIGINS,
     credentials: true,
   });
   // Better Auth owns /api/auth/*. Mounted on Express directly, and before

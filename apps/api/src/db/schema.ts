@@ -103,6 +103,9 @@ export const users = pgTable(
     ...authTimestamps,
   },
   (table) => [
+    // Better Auth lowercases the Google email before looking the user up, so a
+    // row with capitals would never match and that member could not sign in.
+    check("users_email_lowercase", sql`${table.email} = lower(${table.email})`),
     check(
       "users_valid_role",
       sql`${table.role} IN (${sql.raw(userRoles.map((role) => `'${role}'`).join(", "))})`,

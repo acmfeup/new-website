@@ -38,7 +38,7 @@ async function devLogin(name: string) {
 
   console.log(`Logged in as ${persona.email} (${persona.role}). Paste this in the browser console on http://localhost:3000:
 
-document.cookie = "${cookie.name}=${cookie.value}; path=/"
+document.cookie = "${cookie.name}=${encodeURIComponent(cookie.value)}; path=/; SameSite=Lax${cookie.expires ? `; expires=${new Date(cookie.expires * 1000).toUTCString()}` : ""}"
 `);
 }
 

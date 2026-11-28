@@ -1,9 +1,9 @@
 import { type BetterAuthOptions, betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { parseCorsOrigins } from "../config/cors";
 import {
   BETTER_AUTH_SECRET,
   BETTER_AUTH_URL,
+  CORS_ORIGINS,
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
 } from "../config/env";
@@ -17,7 +17,7 @@ export const authOptions = {
   secret: BETTER_AUTH_SECRET,
   database: drizzleAdapter(db, { provider: "pg", schema, usePlural: true }),
 
-  trustedOrigins: parseCorsOrigins(process.env.CORS_ORIGIN),
+  trustedOrigins: CORS_ORIGINS,
   user: {
     additionalFields: {
       // input: false, so no request can set or change its own role.
@@ -32,7 +32,7 @@ export const authOptions = {
     google: {
       clientId: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
-      //only a hint: Google's account picker shows acmfeup.eu accounts.
+      // Only a hint: Google's account picker shows acmfeup.eu accounts.
       hd: "acmfeup.eu",
       // The real allow-list: only emails already in `users` can sign in.
       // The first Google login links to that row by email.
