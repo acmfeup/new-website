@@ -20,6 +20,7 @@ const LINK_TYPES: Partial<Record<string, { label: string; icon: LucideIcon }>> =
     linkedin: { label: "LinkedIn", icon: Linkedin },
     instagram: { label: "Instagram", icon: Instagram },
     website: { label: "Website", icon: Globe },
+    link: { label: "Link", icon: Link },
   };
 
 interface MemberCardProps {
@@ -36,6 +37,7 @@ export default function MemberCard({ member }: MemberCardProps) {
             alt=""
             width={128}
             height={128}
+            unoptimized={member.photoUrl.startsWith("http")}
             className="size-32 rounded-full object-cover"
           />
         ) : (
