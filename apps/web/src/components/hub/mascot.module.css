@@ -1,0 +1,64 @@
+/* AI WARNING: made with the help of AI! */
+
+.sprite {
+  display: block;
+  width: 112px;
+  height: 112px;
+  background: url("/hub/mascot-sprites.webp") 0 0 / 600% 400% no-repeat;
+  animation: frames 600ms steps(6) infinite;
+}
+.push {
+  background-position-y: 33.333%;
+}
+.pushRight {
+  background-position-y: 33.333%;
+  transform: scaleX(-1);
+}
+.walkRight {
+  background-position-y: 66.667%;
+}
+.wave {
+  background-position-y: 100%;
+  animation-duration: 900ms;
+  animation-iteration-count: 2;
+}
+
+.scene {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Follows the sidebar edge while it grows/shrinks the sidebar! */
+.actor {
+  position: absolute;
+  bottom: 112px;
+  transition: left 1100ms linear;
+}
+.enter {
+  animation: enter linear both;
+}
+.leave {
+  animation: leave 900ms linear both;
+}
+.goodbye {
+  bottom: 24px;
+}
+
+@keyframes frames {
+  to {
+    background-position-x: 120%;
+  }
+}
+@keyframes enter {
+  from {
+    transform: translateX(var(--entry-offset));
+  }
+}
+@keyframes leave {
+  to {
+    transform: translateX(-360px);
+  }
+}
