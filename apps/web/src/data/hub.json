@@ -5,6 +5,13 @@
     "department": "Development",
     "role": "editor"
   },
+  "profile": {
+    "id": 1,
+    "name": "Rodrigo Dias",
+    "role": "Developer",
+    "photoUrl": null,
+    "links": [{ "type": "github", "url": "https://github.com/acmfeup" }]
+  },
   "events": [
     {
       "id": 1,

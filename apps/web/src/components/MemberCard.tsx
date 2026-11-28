@@ -36,6 +36,7 @@ export default function MemberCard({ member }: MemberCardProps) {
             alt=""
             width={128}
             height={128}
+            unoptimized={member.photoUrl.startsWith("http")}
             className="size-32 rounded-full object-cover"
           />
         ) : (
