@@ -94,11 +94,10 @@ export default function ProfileForm({
           <FieldSet>
             <FieldLegend>Links</FieldLegend>
             {Array.from({ length: MAX_LINKS }, (_, i) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: fixed rows, never reordered
+              // biome-ignore lint/suspicious/noArrayIndexKey: they're fixed rows (never re-ordered). its fineee
               <div key={i} className="flex gap-2">
                 <Select
                   name={`links.${i}.type`}
-                  aria-label={`Link ${i + 1} platform`}
                   defaultValue={profile.links[i]?.type ?? "link"}
                   className="w-30"
                 >
@@ -110,7 +109,6 @@ export default function ProfileForm({
                 </Select>
                 <Input
                   name={`links.${i}.url`}
-                  aria-label={`Link ${i + 1} URL`}
                   type="url"
                   placeholder="https://..."
                   defaultValue={profile.links[i]?.url ?? ""}
